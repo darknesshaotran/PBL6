@@ -1,4 +1,4 @@
-const accountRoute = require('./user.js');
+const accountRoute = require('./user.routes.js');
 
 const route = (app) => {
     app.use('/api/user', accountRoute);
