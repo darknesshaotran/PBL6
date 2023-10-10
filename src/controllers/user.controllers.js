@@ -4,8 +4,8 @@ const UserServices = require('../services/user.services');
 const HTTP_STATUS = require('../constants/httpStatus');
 class AccountController {
     async register(req, res, next) {
-        // throw new ErrorsWithStatus({ status: HTTP_STATUS.BAD_REQUEST, message: 'loi with status' });
-        return res.json({ success: true });
+        const data = req.body;
+        return res.json({ success: true, data: data });
     }
 }
 module.exports = new AccountController();

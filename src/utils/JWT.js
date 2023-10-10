@@ -29,3 +29,7 @@ const verifyToken = (token) => {
         });
     });
 };
+
+exports.signAccessToken = signAccessToken;
+exports.signReFreshToken = signReFreshToken;
+exports.verifyToken = verifyToken;
