@@ -50,5 +50,7 @@ const USERS_MESSAGES = {
     OLD_PASSWORD_NOT_MATCH: 'old password is not match',
     CHANGE_PASS_SUCCESS: 'change password successfully',
     UPLOAD_SUCCESS: 'upload successfully',
+    PHONENUMBER_IS_REQUIRED: 'phone number is required',
+    PHONENUMBER_MUST_BE_STRING: 'phone number must be string',
 };
 module.exports = USERS_MESSAGES;
