@@ -6,4 +6,5 @@ const router = Router();
 
 const UserController = require('../controllers/user.controllers');
 router.get('/register', registerValidator, wrapController(UserController.register));
+router.get('/login', loginValidator, wrapController(UserController.login));
 module.exports = router;

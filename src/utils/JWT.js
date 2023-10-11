@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const signAccessToken = (payload) => {
     const options = { algorithm: 'HS256', expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN };
-    return new Promise()((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         jwt.sign(payload, process.env.JWT_SECRET, options, (err, token) => {
             if (err) throw reject(err);
             resolve(token);

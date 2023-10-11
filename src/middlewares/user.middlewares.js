@@ -5,6 +5,7 @@ const ErrorsWithStatus = require('../constants/Error');
 const hashPassword = require('../utils/crypto');
 const { verifyToken } = require('../utils/JWT');
 const validate = require('../utils/validation');
+const userServices = require('../services/user.services');
 const checkRegisterValidator = checkSchema(
     {
         firstname: {
@@ -49,10 +50,10 @@ const checkRegisterValidator = checkSchema(
             trim: true,
             custom: {
                 options: async (value) => {
-                    // const isExistEmail = await usersService.checkExistedEmail(value)
-                    // if (isExistEmail) {
-                    //   throw new Error(USERS_MESSAGES.EMAIL_ALREADY_EXISTS)
-                    // }
+                    const isExistEmail = await userServices.isEmailExist(value);
+                    if (isExistEmail) {
+                        throw new Error(USERS_MESSAGES.EMAIL_ALREADY_EXISTS);
+                    }
                     return true;
                 },
             },
@@ -114,6 +115,13 @@ const checkLoginValidator = checkSchema(
             },
             notEmpty: {
                 errorMessage: USERS_MESSAGES.EMAIL_IS_REQUIRED,
+            },
+            custom: {
+                options: async (value, { req }) => {
+                    const user = await userServices.findUserLogin(value, req.body.password);
+                    req.user = user;
+                    return true;
+                },
             },
         },
         password: {
