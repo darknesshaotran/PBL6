@@ -25,6 +25,15 @@ const signReFreshToken = (payload) => {
     });
 };
 
+const signForgotPasswordToken = (payload) => {
+    const options = { algorithm: 'HS256', expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN };
+    return new Promise((resolve, reject) => {
+        jwt.sign(payload, process.env.JWT_SECRET, options, (err, token) => {
+            if (err) throw reject(err);
+            resolve(token);
+        });
+    });
+};
 const verifyToken = (token) => {
     return new Promise((resolve, reject) => {
         jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
@@ -37,3 +46,4 @@ const verifyToken = (token) => {
 exports.signAccessToken = signAccessToken;
 exports.signReFreshToken = signReFreshToken;
 exports.verifyToken = verifyToken;
+exports.signForgotPasswordToken = signForgotPasswordToken;

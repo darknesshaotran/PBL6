@@ -5,14 +5,23 @@ const {
     loginValidator,
     accessTokenValidator,
     refreshTokenValidator,
+    forgotPasswordValidator,
+    VerifyForgotPasswordTokenValidator,
+    ResetPasswordValidator,
 } = require('../middlewares/user.middlewares.js');
 
 const router = Router();
 
-const UserController = require('../controllers/user.controllers');
 const userControllers = require('../controllers/user.controllers');
-router.post('/register', registerValidator, wrapController(UserController.register));
-router.post('/login', loginValidator, wrapController(UserController.login));
+router.post('/register', registerValidator, wrapController(userControllers.register));
+router.post('/login', loginValidator, wrapController(userControllers.login));
 router.post('/logout', accessTokenValidator, refreshTokenValidator, wrapController(userControllers.logout));
-router.post('/refreshToken', refreshTokenValidator, wrapController(UserController.refreshToken));
+router.post('/refreshToken', refreshTokenValidator, wrapController(userControllers.refreshToken));
+router.post('/forgot-password', forgotPasswordValidator, wrapController(userControllers.forgotPassword));
+router.post(
+    '/verify-forgot-password',
+    VerifyForgotPasswordTokenValidator,
+    wrapController(userControllers.verifyForgotPassword),
+);
+router.post('/reset-password', ResetPasswordValidator, wrapController(userControllers.resetPassword));
 module.exports = router;

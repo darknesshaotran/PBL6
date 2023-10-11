@@ -183,7 +183,132 @@ const checkRefreshTokenValidator = checkSchema(
     },
     ['body'],
 );
+const checkForgotPasswordValidator = checkSchema(
+    {
+        email: {
+            isEmail: {
+                errorMessage: USERS_MESSAGES.EMAIL_IS_INVALID,
+            },
+            custom: {
+                options: async (value, { req }) => {
+                    const user = await db.Account.findOne({ where: { email: value } });
+                    if (user === null) {
+                        throw new Error(USERS_MESSAGES.USER_NOT_FOUND);
+                    }
+                    req.user = user;
+                    return true;
+                },
+            },
+        },
+    },
+    ['body'],
+);
+const checkVerifyForgotPasswordTokenValidator = checkSchema(
+    {
+        forgot_password_token: {
+            trim: true,
+            custom: {
+                options: async (value, { req }) => {
+                    if (!value) {
+                        throw new ErrorsWithStatus({
+                            message: USERS_MESSAGES.FORGOT_PASSWORD_TOKEN_REQUIRED,
+                            status: HTTP_STATUS.UNAUTHORIZED,
+                        });
+                    }
+                    const decoded_forgot_password_token = await verifyToken(value);
+                    const user = await db.Account.findOne({ where: { id: decoded_forgot_password_token.userID } });
+                    if (!user) {
+                        throw new ErrorsWithStatus({
+                            message: USERS_MESSAGES.USER_NOT_FOUND,
+                            status: HTTP_STATUS.UNAUTHORIZED,
+                        });
+                    }
+                    if (user.forgot_password_token !== value) {
+                        throw new ErrorsWithStatus({
+                            message: USERS_MESSAGES.FORGOT_PASSWORD_TOKEN_INVALID,
+                            status: HTTP_STATUS.UNAUTHORIZED,
+                        });
+                    }
+                    return true;
+                },
+            },
+        },
+    },
+    ['body'],
+);
+
+const checkResetPasswordValidator = checkSchema(
+    {
+        password: {
+            notEmpty: {
+                errorMessage: USERS_MESSAGES.PASSWORD_IS_REQUIRED,
+            },
+            isString: {
+                errorMessage: USERS_MESSAGES.PASSWORD_MUST_BE_STRING,
+            },
+            isStrongPassword: {
+                options: {
+                    minLength: 8,
+                    minLowercase: 1,
+                    minUppercase: 0,
+                    minNumbers: 1,
+                    minSymbols: 0,
+                },
+                errorMessage: USERS_MESSAGES.PASSWORD_MUST_BE_STRONG,
+            },
+        },
+        confirm_password: {
+            notEmpty: {
+                errorMessage: USERS_MESSAGES.CONFIRM_PASSWORD_IS_REQUIRED,
+            },
+            isString: {
+                errorMessage: USERS_MESSAGES.CONFIRM_PASSWORD_MUST_BE_STRING,
+            },
+            custom: {
+                options: (value, { req }) => {
+                    if (value !== req.body.password) {
+                        throw new Error(USERS_MESSAGES.CONFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD);
+                    }
+                    return true;
+                },
+            },
+        },
+        forgot_password_token: {
+            trim: true,
+            custom: {
+                options: async (value, { req }) => {
+                    if (!value) {
+                        throw new ErrorsWithStatus({
+                            message: USERS_MESSAGES.FORGOT_PASSWORD_TOKEN_REQUIRED,
+                            status: HTTP_STATUS.UNAUTHORIZED,
+                        });
+                    }
+                    const decoded_forgot_password_token = await verifyToken(value);
+                    const user = await db.Account.findOne({ where: { id: decoded_forgot_password_token.userID } });
+                    if (!user) {
+                        throw new ErrorsWithStatus({
+                            message: USERS_MESSAGES.USER_NOT_FOUND,
+                            status: HTTP_STATUS.UNAUTHORIZED,
+                        });
+                    }
+                    if (user.forgot_password_token !== value) {
+                        throw new ErrorsWithStatus({
+                            message: USERS_MESSAGES.FORGOT_PASSWORD_TOKEN_INVALID,
+                            status: HTTP_STATUS.UNAUTHORIZED,
+                        });
+                    }
+                    req.decoded_forgot_password_token = decoded_forgot_password_token;
+                    return true;
+                },
+            },
+        },
+    },
+    ['body'],
+);
 exports.registerValidator = validate(checkRegisterValidator);
 exports.loginValidator = validate(checkLoginValidator);
 exports.accessTokenValidator = validate(checkAccessTokenValidator);
 exports.refreshTokenValidator = validate(checkRefreshTokenValidator);
+exports.forgotPasswordValidator = validate(checkForgotPasswordValidator);
+exports.VerifyForgotPasswordTokenValidator = validate(checkVerifyForgotPasswordTokenValidator);
+exports.ResetPasswordValidator = validate(checkResetPasswordValidator);
