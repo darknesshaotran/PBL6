@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const ErrorsWithStatus = require('../constants/Error');
+const HTTP_STATUS = require('../constants/httpStatus');
 dotenv.config();
 const signAccessToken = (payload) => {
     const options = { algorithm: 'HS256', expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN };
@@ -12,7 +14,9 @@ const signAccessToken = (payload) => {
 };
 
 const signReFreshToken = (payload) => {
-    const options = { algorithm: 'HS256', expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN };
+    const options = payload.exp
+        ? { algorithm: 'HS256' }
+        : { algorithm: 'HS256', expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN };
     return new Promise((resolve, reject) => {
         jwt.sign(payload, process.env.JWT_SECRET, options, (err, token) => {
             if (err) throw reject(err);

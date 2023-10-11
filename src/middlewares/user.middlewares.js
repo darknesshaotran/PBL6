@@ -6,6 +6,7 @@ const hashPassword = require('../utils/crypto');
 const { verifyToken } = require('../utils/JWT');
 const validate = require('../utils/validation');
 const userServices = require('../services/user.services');
+const db = require('../models');
 const checkRegisterValidator = checkSchema(
     {
         firstname: {
@@ -145,7 +146,7 @@ const checkAccessTokenValidator = checkSchema(
                         });
                     }
                     const accessToken = value.split(' ')[1];
-                    const decoded_authorization = await verifyToken({ token: accessToken });
+                    const decoded_authorization = await verifyToken(accessToken);
                     req.decoded_authorization = decoded_authorization;
                     return true;
                 },
@@ -154,7 +155,35 @@ const checkAccessTokenValidator = checkSchema(
     },
     ['headers'],
 );
-
+const checkRefreshTokenValidator = checkSchema(
+    {
+        refreshToken: {
+            custom: {
+                options: async (value, { req }) => {
+                    if (!value) {
+                        throw new ErrorsWithStatus({
+                            message: USERS_MESSAGES.REFRESH_TOKEN_REQUIRED,
+                            status: HTTP_STATUS.UNAUTHORIZED,
+                        });
+                    }
+                    const decoded_refresh_token = await verifyToken(value);
+                    // const Refresh_token = await databaseService.refreshTokens.findOne({ token: value });
+                    const refreshToken = await db.refreshToken.findOne({ where: { refreshToken: value } });
+                    if (refreshToken === null) {
+                        throw new ErrorsWithStatus({
+                            message: USERS_MESSAGES.USED_REFRESH_TOKEN_OR_NOT_EXIST,
+                            status: HTTP_STATUS.UNAUTHORIZED,
+                        });
+                    }
+                    req.decoded_refresh_token = decoded_refresh_token;
+                    return true;
+                },
+            },
+        },
+    },
+    ['body'],
+);
 exports.registerValidator = validate(checkRegisterValidator);
 exports.loginValidator = validate(checkLoginValidator);
 exports.accessTokenValidator = validate(checkAccessTokenValidator);
+exports.refreshTokenValidator = validate(checkRefreshTokenValidator);
