@@ -10,6 +10,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
             },
             id_category: {
+                allowNull: false,
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'Categories', // Tên bảng mà khoá ngoại liên kết đến
@@ -19,6 +20,7 @@ module.exports = {
                 onDelete: 'CASCADE',
             },
             id_brand: {
+                allowNull: false,
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'Brands', // Tên bảng mà khoá ngoại liên kết đến
@@ -47,15 +49,6 @@ module.exports = {
             },
             size: {
                 type: Sequelize.INTEGER,
-            },
-            id_image: {
-                type: Sequelize.INTEGER,
-                references: {
-                    model: 'Images', // Tên bảng mà khoá ngoại liên kết đến
-                    key: 'id', // Tên trường khoá chính trong bảng Role
-                },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE',
             },
             createdAt: {
                 allowNull: false,

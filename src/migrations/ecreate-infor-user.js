@@ -10,6 +10,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
             },
             id_account: {
+                allowNull: false,
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'Accounts', // Tên bảng mà khoá ngoại liên kết đến

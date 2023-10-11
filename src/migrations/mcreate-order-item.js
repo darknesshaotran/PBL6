@@ -10,6 +10,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
             },
             id_shoes: {
+                allowNull: false,
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'Shoes', // Tên bảng mà khoá ngoại liên kết đến
@@ -18,10 +19,11 @@ module.exports = {
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE',
             },
-            id_cart: {
+            id_order: {
+                allowNull: false,
                 type: Sequelize.INTEGER,
                 references: {
-                    model: 'Carts', // Tên bảng mà khoá ngoại liên kết đến
+                    model: 'Orders', // Tên bảng mà khoá ngoại liên kết đến
                     key: 'id', // Tên trường khoá chính trong bảng Role
                 },
                 onUpdate: 'CASCADE',

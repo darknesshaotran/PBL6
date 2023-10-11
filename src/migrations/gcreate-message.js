@@ -10,6 +10,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
             },
             id_reciever: {
+                allowNull: false,
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'Accounts', // Tên bảng mà khoá ngoại liên kết đến
@@ -19,6 +20,7 @@ module.exports = {
                 onDelete: 'CASCADE',
             },
             id_sender: {
+                allowNull: false,
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'Accounts', // Tên bảng mà khoá ngoại liên kết đến

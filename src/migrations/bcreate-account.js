@@ -16,6 +16,7 @@ module.exports = {
                 type: Sequelize.STRING,
             },
             id_role: {
+                allowNull: false,
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'Roles', // Tên bảng mà khoá ngoại liên kết đến
@@ -23,6 +24,9 @@ module.exports = {
                 },
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE',
+            },
+            forgot_password_token: {
+                type: Sequelize.STRING,
             },
             createdAt: {
                 allowNull: false,

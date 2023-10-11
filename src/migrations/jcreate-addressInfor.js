@@ -2,22 +2,12 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('Ratings', {
+        await queryInterface.createTable('AddressInfors', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER,
-            },
-            id_shoes: {
-                allowNull: false,
-                type: Sequelize.INTEGER,
-                references: {
-                    model: 'Shoes', // Tên bảng mà khoá ngoại liên kết đến
-                    key: 'id', // Tên trường khoá chính trong bảng Role
-                },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE',
             },
             id_account: {
                 allowNull: false,
@@ -29,10 +19,10 @@ module.exports = {
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE',
             },
-            star: {
-                type: Sequelize.INTEGER,
+            address: {
+                type: Sequelize.STRING,
             },
-            comment: {
+            phoneNumber: {
                 type: Sequelize.STRING,
             },
             createdAt: {
@@ -48,6 +38,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('Ratings');
+        await queryInterface.dropTable('AddressInfors');
     },
 };

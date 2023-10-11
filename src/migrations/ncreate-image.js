@@ -13,7 +13,14 @@ module.exports = {
                 type: Sequelize.STRING,
             },
             id_shoes: {
+                allowNull: false,
                 type: Sequelize.INTEGER,
+                references: {
+                    model: 'Shoes', // Tên bảng mà khoá ngoại liên kết đến
+                    key: 'id', // Tên trường khoá chính trong bảng Role
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
             },
             createdAt: {
                 allowNull: false,
