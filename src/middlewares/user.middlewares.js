@@ -7,6 +7,7 @@ const { verifyToken } = require('../utils/JWT');
 const validate = require('../utils/validation');
 const userServices = require('../services/user.services');
 const db = require('../models');
+const { wrapController } = require('../utils/handle');
 const checkRegisterValidator = checkSchema(
     {
         firstname: {
@@ -305,6 +306,16 @@ const checkResetPasswordValidator = checkSchema(
     },
     ['body'],
 );
+const isAdminValidator = (req, res, next) => {
+    const { decoded_authorization } = req;
+    if (decoded_authorization.role !== 'admin') {
+        throw new ErrorsWithStatus({
+            status: HTTP_STATUS.UNAUTHORIZED,
+            message: USERS_MESSAGES.NOT_ENOUGH_AUTHORIZATION,
+        });
+    }
+    next();
+};
 exports.registerValidator = validate(checkRegisterValidator);
 exports.loginValidator = validate(checkLoginValidator);
 exports.accessTokenValidator = validate(checkAccessTokenValidator);
@@ -312,3 +323,4 @@ exports.refreshTokenValidator = validate(checkRefreshTokenValidator);
 exports.forgotPasswordValidator = validate(checkForgotPasswordValidator);
 exports.VerifyForgotPasswordTokenValidator = validate(checkVerifyForgotPasswordTokenValidator);
 exports.ResetPasswordValidator = validate(checkResetPasswordValidator);
+exports.isAdminValidator = wrapController(isAdminValidator);
