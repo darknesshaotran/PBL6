@@ -24,5 +24,5 @@ router.post(
     wrapController(userControllers.verifyForgotPassword),
 );
 router.post('/reset-password', ResetPasswordValidator, wrapController(userControllers.resetPassword));
-router.get('/profile/me', wrapController(userControllers.getMyprofile));
+router.get('/profile/me', accessTokenValidator, wrapController(userControllers.getMyprofile));
 module.exports = router;

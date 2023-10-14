@@ -1,6 +1,7 @@
 const db = require('../models');
 const { ErrorsWithStatus } = require('../constants/Error');
 const Account = require('../models/account');
+const inforUser = require('../models/inforuser');
 const hashPassword = require('../utils/crypto');
 const USERS_MESSAGES = require('../constants/messages');
 const { signAccessToken, signReFreshToken, verifyToken, signForgotPasswordToken } = require('../utils/JWT');
@@ -27,6 +28,9 @@ class UserServices {
             lastname: data.lastname,
             firstname: data.firstname,
             phoneNumber: data.phoneNumber,
+        });
+        await db.Cart.create({
+            id_account: user.id,
         });
         return {
             success: true,
@@ -104,21 +108,43 @@ class UserServices {
             message: USERS_MESSAGES.RESET_PASSWORD_SUCCESS,
         };
     }
-    async getMyprofile(userID) {
-        const user = await db.Account.findAll({
-            include: {
-                model: Tool,
-                as: 'Instruments',
-                where: {
-                    size: {
-                        [Op.ne]: 'small',
-                    },
-                },
+    async getProfile(userID) {
+        const user = await db.Account.findOne({
+            where: { id: userID },
+            attributes: {
+                exclude: ['password', 'forgot_password_token', 'id_role'],
             },
-        })[0];
+            include: [
+                { model: db.Role, as: 'Role', attributes: ['id', 'roleName'] },
+                {
+                    model: db.inforUser,
+                    as: 'inforUser',
+                    attributes: ['firstname', 'lastname', 'phoneNumber', 'avatar'],
+                },
+            ],
+        });
+
+        // const Cart = await db.Cart.findOne({
+        //     where: { id_account: userID },
+        //     attributes: {
+        //         exclude: ['createdAt', 'updatedAt', 'createAt'],
+        //     },
+        //     include: [
+        //         {
+        //             model: db.Shoes,
+        //             through: {
+        //                 attributes: ['quantity'],
+        //                 as: 'cart_item_infor',
+        //             },
+        //             as: 'Cart_Items',
+        //             attributes: ['id', 'name', 'price'],
+        //         },
+        //     ],
+        // });
         return {
             success: true,
             user: user,
+            item: Cart,
         };
     }
 }

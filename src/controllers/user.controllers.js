@@ -50,7 +50,13 @@ class AccountController {
     async getMyprofile(req, res, next) {
         const { decoded_authorization } = req;
         const userID = decoded_authorization.userID;
-        const result = await userServices.getMyprofile(userID);
+        const result = await userServices.getProfile(userID);
+        res.json(result);
+    }
+
+    async getProfile(req, res, next) {
+        const { userID } = req.params;
+        const result = await userServices.getProfile(userID);
         res.json(result);
     }
 }

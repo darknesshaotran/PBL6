@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            addressInfor.belongsTo(models.Account, { foreignKey: 'id_account', targetKey: 'id' });
         }
     }
     addressInfor.init(

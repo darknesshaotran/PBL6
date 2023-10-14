@@ -9,6 +9,14 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            Account.belongsTo(models.Role, { foreignKey: 'id_role' });
+            Account.hasOne(models.inforUser, { foreignKey: 'id_account' });
+            Account.hasOne(models.Cart, { foreignKey: 'id_account' });
+            Account.hasMany(models.Message, { foreignKey: 'id_reciever' });
+            Account.hasMany(models.Message, { foreignKey: 'id_sender' });
+            Account.hasMany(models.addressInfor, { foreignKey: 'id_account' });
+            Account.hasMany(models.Order, { foreignKey: 'id_account' });
+            Account.hasMany(models.Rating, { foreignKey: 'id_account' });
         }
     }
     Account.init(
