@@ -38,33 +38,33 @@ const handleUploadImage = async (req) => {
     });
 };
 
-const upLoadSingleImage = async (datas) => {
-    const data = datas[0];
-    const newName = data.newFilename.split('.')[0] + '.jpg';
-    const newPath = path.resolve('uploads/temp/') + `/` + newName;
-    await sharp(data.filepath).jpeg({ quality: 80 }).toFile(newPath);
-    fs.unlinkSync(data.filepath);
-    fs.unlinkSync(newPath);
-    const s3Result = await uploadFileByS3({
-        fileName: newName,
-        filePath: newPath,
-    });
-    return {
-        url: s3Result.Location,
-    };
-};
-const uploadMultiImage = async (data) => {
+// const handleUpLoadSingleImage = async (datas) => {
+//     const data = datas[0];
+//     const newName = data.newFilename.split('.')[0] + '.jpg';
+//     const newPath = path.resolve('uploads/temp/') + `/` + newName;
+//     await sharp(data.filepath).jpeg({ quality: 80 }).toFile(newPath);
+//     fs.unlinkSync(data.filepath);
+//     fs.unlinkSync(newPath);
+//     const s3Result = await uploadFileByS3({
+//         fileName: newName,
+//         filePath: newPath,
+//     });
+//     return {
+//         url: s3Result.Location,
+//     };
+// };
+const handleUploadMultiImage = async (data) => {
     const results = Promise.all(
         data.map(async (file) => {
             const newName = file.newFilename.split('.')[0] + '.jpg';
-            await sharp(file.filepath)
-                .jpeg({ quality: 80 })
-                .toFile(path.resolve('uploads/temp/') + `/` + newName);
-            fs.unlinkSync(file.filepath);
+            const newPath = path.resolve('uploads\\temp\\') + `\\` + newName;
+            await sharp(file.filepath).jpeg({ quality: 80 }).toFile(newPath);
             const s3Result = await uploadFileByS3({
                 fileName: newName,
-                filePath: path.resolve('uploads/temp/') + `/` + newName,
+                filePath: newPath,
             });
+            fs.unlinkSync(file.filepath);
+            fs.unlinkSync(newPath);
             return {
                 url: s3Result.Location,
             };
@@ -74,6 +74,13 @@ const uploadMultiImage = async (data) => {
     return results;
 };
 
-exports.handleUploadImage = handleUploadImage;
-exports.upLoadSingleImage = upLoadSingleImage;
-exports.uploadMultiImage = uploadMultiImage;
+const uploadImage = async (req) => {
+    const data = await handleUploadImage(req); // upload lên local pc
+    const result = await handleUploadMultiImage(data); // upload lên cloud
+    return result;
+};
+
+// exports.handleUploadImage = handleUploadImage;
+// exports.handleUploadMultiImage = handleUploadMultiImage;
+
+exports.uploadImage = uploadImage;
