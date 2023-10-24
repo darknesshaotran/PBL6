@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
             Shoes.belongsTo(models.Category, { foreignKey: 'id_category', targetKey: 'id' });
             Shoes.belongsTo(models.Brand, { foreignKey: 'id_brand', targetKey: 'id' });
             Shoes.hasMany(models.Rating, { foreignKey: 'id_shoes' });
+            Shoes.hasMany(models.Image, { foreignKey: 'id_shoes' });
         }
     }
     Shoes.init(
