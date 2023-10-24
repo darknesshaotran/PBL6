@@ -44,5 +44,13 @@ class ShoesController {
         );
         res.json(result);
     }
+    async deleteShoes(req, res, next) {
+        const { id_shoes } = req.params;
+        const result = await shoesServices.deleteShoes(id_shoes);
+    }
+    async updateShoesInfor(req, res, next) {
+        const { id_shoes } = req.params;
+        const result = await shoesServices.updateShoesInfor(id_shoes, req.body);
+    }
 }
 module.exports = new ShoesController();

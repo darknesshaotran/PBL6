@@ -155,5 +155,31 @@ class ShoesServices {
             message: 'add shoes successfully',
         };
     }
+    async deleteShoes(id_shoes) {
+        await db.Shoes.destroy({
+            where: {
+                id: id_shoes,
+            },
+        });
+        return {
+            success: true,
+            message: 'delete shoes successfully',
+        };
+    }
+    async updateShoesInfor(id_shoes, data) {
+        await db.Shoes.update(
+            {
+                ...data,
+                updatedAt: new Date(),
+            },
+            {
+                where: { id: id_shoes },
+            },
+        );
+        return {
+            success: true,
+            message: 'update shoes successfully',
+        };
+    }
 }
 module.exports = new ShoesServices();
