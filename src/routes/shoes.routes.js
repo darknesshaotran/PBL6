@@ -5,7 +5,9 @@ const router = Router();
 
 const userControllers = require('../controllers/user.controllers');
 const shoesControllers = require('../controllers/shoes.controllers');
-router.get('/', wrapController(shoesControllers.showAllShoes));
+
+router.get('/add', wrapController(shoesControllers.addShoes));
 router.get('/:id_shoes', wrapController(shoesControllers.shoesDetails));
+router.get('/', wrapController(shoesControllers.showAllShoes));
 
 module.exports = router;

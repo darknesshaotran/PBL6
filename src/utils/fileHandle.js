@@ -2,6 +2,7 @@
 const path = require('path');
 const fs = require('fs');
 const sharp = require('sharp');
+const formidable = require('formidable');
 const { uploadFileByS3 } = require('./s3');
 
 const handleUploadImage = async (req) => {
@@ -31,9 +32,9 @@ const handleUploadImage = async (req) => {
                 return reject(new Error('file is empty'));
             }
             if (Array.isArray(files.image)) {
-                resolve(files.image);
+                resolve({ files: files.image, fields: fields });
             }
-            resolve([files.image]);
+            resolve({ files: [files.image], fields: fields });
         });
     });
 };
@@ -75,12 +76,13 @@ const handleUploadMultiImage = async (data) => {
 };
 
 const uploadImage = async (req) => {
-    const data = await handleUploadImage(req); // upload lên local pc
-    const result = await handleUploadMultiImage(data); // upload lên cloud
-    return result;
+    const { files, fields } = await handleUploadImage(req); // upload lên local pc
+    const result = await handleUploadMultiImage(files); // upload lên cloud
+    return { urls: result, fields: fields };
 };
 
 // exports.handleUploadImage = handleUploadImage;
 // exports.handleUploadMultiImage = handleUploadMultiImage;
 
 exports.uploadImage = uploadImage;
+// exports.handleFormData = handleFormData;

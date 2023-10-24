@@ -78,8 +78,8 @@ class AccountController {
     async changeAvatar(req, res, next) {
         const { decoded_authorization } = req;
         const userID = decoded_authorization.userID;
-        const image = await uploadImage(req);
-        const result = await userServices.changeAvatar(userID, image[0]);
+        const { urls, fields } = await uploadImage(req);
+        const result = await userServices.changeAvatar(userID, urls[0]);
         res.json(result);
     }
 }

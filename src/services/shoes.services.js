@@ -132,5 +132,28 @@ class ShoesServices {
 
         return { success: true, result: shoesDetails };
     }
+    async addShoes(id_category, id_brand, name, price, import_price, amount, description, color, size, image) {
+        const shoes = await db.Shoes.create({
+            id_category,
+            id_brand,
+            name,
+            price,
+            import_price,
+            amount,
+            description,
+            color,
+            size,
+        });
+        for (let i = 0; i < image.length; i++) {
+            await db.Image.create({
+                image: image[i].url,
+                id_shoes: shoes.id,
+            });
+        }
+        return {
+            success: true,
+            message: 'add shoes successfully',
+        };
+    }
 }
 module.exports = new ShoesServices();
