@@ -158,5 +158,19 @@ class UserServices {
             message: USERS_MESSAGES.UPDATE_MY_PROFILE_SUCCESS,
         };
     }
+    async changeAvatar(userID, image) {
+        await db.inforUser.update(
+            {
+                avatar: image.url,
+            },
+            {
+                where: { id_account: userID },
+            },
+        );
+        return {
+            success: true,
+            message: 'Change avatar successfully',
+        };
+    }
 }
 module.exports = new UserServices();

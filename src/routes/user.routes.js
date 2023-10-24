@@ -35,10 +35,12 @@ router.post(
     ChangePasswordValidator,
     wrapController(userControllers.changePassword),
 );
+
 router.put(
     '/updateProfile',
     accessTokenValidator,
     UpdateProfileValidator,
     wrapController(userControllers.updateProfile),
 ); // ko update avatar trong này
+router.put('/update-avatar', accessTokenValidator, wrapController(userControllers.changeAvatar));
 module.exports = router;

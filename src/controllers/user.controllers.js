@@ -75,5 +75,12 @@ class AccountController {
         const result = await userServices.updateProfile(userID, data);
         res.json(result);
     }
+    async changeAvatar(req, res, next) {
+        const { decoded_authorization } = req;
+        const userID = decoded_authorization.userID;
+        const image = await uploadImage(req);
+        const result = await userServices.changeAvatar(userID, image[0]);
+        res.json(result);
+    }
 }
 module.exports = new AccountController();
