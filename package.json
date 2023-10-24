@@ -11,6 +11,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.433.0",
+        "@aws-sdk/lib-storage": "^3.433.0",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "express": "^4.18.2",
@@ -19,7 +21,8 @@
         "jsonwebtoken": "^9.0.2",
         "mysql2": "^3.6.1",
         "nodemon": "^3.0.1",
-        "sequelize": "^6.33.0"
+        "sequelize": "^6.33.0",
+        "sharp": "^0.32.6"
     },
     "devDependencies": {
         "@babel/core": "^7.23.0",

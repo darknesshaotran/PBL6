@@ -2,7 +2,8 @@ const ErrorsWithStatus = require('../constants/Error');
 const userServices = require('../services/user.services');
 const HTTP_STATUS = require('../constants/httpStatus');
 const USERS_MESSAGES = require('../constants/messages');
-import { handleUploadImage } from '../utils/fileHandle';
+const { handleUploadImage, uploadMultiImage, upLoadSingleImage } = require('../utils/fileHandle');
+
 class AccountController {
     async register(req, res, next) {
         const data = req.body;
@@ -69,8 +70,9 @@ class AccountController {
     }
 
     async upload(req, res, next) {
-        const data = await handleUploadImage(req);
-        res.json(data);
+        const data = await handleUploadImage(req); // upload lên local pc
+        const result = await upLoadSingleImage(data); // upload lên cloud
+        res.json(result);
     }
 }
 module.exports = new AccountController();
