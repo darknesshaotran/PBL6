@@ -42,7 +42,7 @@ class ShoesServices {
                 ...options,
             },
         });
-        const Shoes = await db.Shoes.findAll({
+        const shoes = await db.Shoes.findAll({
             where: {
                 ...options,
             },
@@ -57,13 +57,26 @@ class ShoesServices {
                 { model: db.Category, as: 'Category', attributes: ['id', 'name'] },
             ],
         });
+        const Shoes = JSON.parse(JSON.stringify(shoes));
 
+        for (let i = 0; i < Shoes.length; i++) {
+            const rating = await db.Rating.findAll({
+                where: { id_shoes: Shoes[i].id },
+            });
+            const Rating = JSON.parse(JSON.stringify(rating));
+            var totalStar = 0;
+            for (let i = 0; i < Rating.length; i++) {
+                totalStar += Number(Rating[i].star);
+            }
+            totalStar = Math.floor(totalStar / Rating.length);
+            Shoes[i].totalStar = totalStar ? totalStar : 0;
+        }
         const totalPages = Math.ceil(Count / limit);
         return {
             success: true,
             result: Shoes,
             totalPages: totalPages,
-            page: page,
+            page: page ? page : 1,
         };
     }
     async shoesDetails(id_shoes) {
@@ -105,11 +118,16 @@ class ShoesServices {
             ],
         });
         const Rating = JSON.parse(JSON.stringify(rating));
-
+        var totalStar = 0;
+        for (let i = 0; i < Rating.length; i++) {
+            totalStar += Number(Rating[i].star);
+        }
+        totalStar = Math.floor(totalStar / Rating.length);
         const shoesDetails = {
             ...Shoes,
             image: Image,
             rating: Rating,
+            totalStar: totalStar,
         };
 
         return { success: true, result: shoesDetails };
