@@ -34,4 +34,5 @@ router.post(
     ChangePasswordValidator,
     wrapController(userControllers.changePassword),
 );
+router.post('/media', accessTokenValidator, wrapController(userControllers.upload));
 module.exports = router;

@@ -2,6 +2,7 @@ const ErrorsWithStatus = require('../constants/Error');
 const userServices = require('../services/user.services');
 const HTTP_STATUS = require('../constants/httpStatus');
 const USERS_MESSAGES = require('../constants/messages');
+import { handleUploadImage } from '../utils/fileHandle';
 class AccountController {
     async register(req, res, next) {
         const data = req.body;
@@ -65,6 +66,11 @@ class AccountController {
         const { password } = req.body;
         const result = await userServices.changePassword(userID, password);
         res.json(result);
+    }
+
+    async upload(req, res, next) {
+        const data = await handleUploadImage(req);
+        res.json(data);
     }
 }
 module.exports = new AccountController();
