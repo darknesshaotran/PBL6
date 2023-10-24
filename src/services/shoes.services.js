@@ -181,5 +181,22 @@ class ShoesServices {
             message: 'update shoes successfully',
         };
     }
+    async updateShoesImages(id_shoes, image) {
+        await db.Image.destroy({
+            where: {
+                id_shoes: id_shoes,
+            },
+        });
+        for (let i = 0; i < image.length; i++) {
+            await db.Image.create({
+                image: image[i].url,
+                id_shoes: id_shoes,
+            });
+        }
+        return {
+            success: true,
+            message: 'update images successfully',
+        };
+    }
 }
 module.exports = new ShoesServices();

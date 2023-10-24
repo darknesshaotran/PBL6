@@ -27,9 +27,8 @@ class ShoesController {
     async addShoes(req, res, next) {
         const { urls, fields } = await uploadImage(req);
         const Fields = JSON.parse(JSON.stringify(fields));
-        const { id_category, id_brand, name, price, import_price, amount, description, color, size, image } = Fields;
+        const { id_category, id_brand, name, price, import_price, amount, description, color, size } = Fields;
 
-        console.log(2);
         const result = await shoesServices.addShoes(
             id_category,
             id_brand,
@@ -51,6 +50,13 @@ class ShoesController {
     async updateShoesInfor(req, res, next) {
         const { id_shoes } = req.params;
         const result = await shoesServices.updateShoesInfor(id_shoes, req.body);
+    }
+    async updateShoesImage(req, res, next) {
+        const { id_shoes } = req.params;
+        const { urls, fields } = await uploadImage(req);
+        console.log(urls);
+        const result = await shoesServices.updateShoesImages(id_shoes, urls);
+        res.json(result);
     }
 }
 module.exports = new ShoesController();
