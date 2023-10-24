@@ -1,10 +1,11 @@
 const db = require('../models');
-const { ErrorsWithStatus } = require('../constants/Error');
+const ErrorsWithStatus = require('../constants/Error');
 const Account = require('../models/account');
 const inforUser = require('../models/inforuser');
 const hashPassword = require('../utils/crypto');
 const USERS_MESSAGES = require('../constants/messages');
 const { signAccessToken, signReFreshToken, verifyToken, signForgotPasswordToken } = require('../utils/JWT');
+const HTTP_STATUS = require('../constants/httpStatus');
 
 class UserServices {
     async findUserLogin(email, password) {
@@ -123,28 +124,22 @@ class UserServices {
                 },
             ],
         });
-
-        // const Cart = await db.Cart.findOne({
-        //     where: { id_account: userID },
-        //     attributes: {
-        //         exclude: ['createdAt', 'updatedAt', 'createAt'],
-        //     },
-        //     include: [
-        //         {
-        //             model: db.Shoes,
-        //             through: {
-        //                 attributes: ['quantity'],
-        //                 as: 'cart_item_infor',
-        //             },
-        //             as: 'Cart_Items',
-        //             attributes: ['id', 'name', 'price'],
-        //         },
-        //     ],
-        // });
         return {
             success: true,
             user: user,
-            item: Cart,
+        };
+    }
+    async changePassword(userID, password) {
+        await db.Account.update(
+            {
+                password: hashPassword(password),
+                updatedAt: new Date(),
+            },
+            { where: { id: userID } },
+        );
+        return {
+            success: true,
+            message: USERS_MESSAGES.CHANGE_PASS_SUCCESS,
         };
     }
 }

@@ -59,5 +59,12 @@ class AccountController {
         const result = await userServices.getProfile(userID);
         res.json(result);
     }
+    async changePassword(req, res, next) {
+        const { decoded_authorization } = req;
+        const userID = decoded_authorization.userID;
+        const { password } = req.body;
+        const result = await userServices.changePassword(userID, password);
+        res.json(result);
+    }
 }
 module.exports = new AccountController();

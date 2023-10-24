@@ -306,6 +306,67 @@ const checkResetPasswordValidator = checkSchema(
     },
     ['body'],
 );
+
+const checkUserExistValidator = checkSchema(
+    {
+        userID: {
+            custom: {
+                options: async (value, { req }) => {
+                    const user = await db.Account.findOne({
+                        where: { id: value },
+                    });
+                    if (!user) {
+                        throw new ErrorsWithStatus({
+                            message: USERS_MESSAGES.USER_NOT_FOUND,
+                            status: HTTP_STATUS.NOT_FOUND,
+                        });
+                    }
+                },
+            },
+        },
+    },
+    ['params'],
+);
+
+const checkChangePasswordValidator = checkSchema(
+    {
+        password: {
+            notEmpty: {
+                errorMessage: USERS_MESSAGES.PASSWORD_IS_REQUIRED,
+            },
+            isString: {
+                errorMessage: USERS_MESSAGES.PASSWORD_MUST_BE_STRING,
+            },
+            isStrongPassword: {
+                options: {
+                    minLength: 8,
+                    minLowercase: 1,
+                    minUppercase: 0,
+                    minNumbers: 1,
+                    minSymbols: 0,
+                },
+                errorMessage: USERS_MESSAGES.PASSWORD_MUST_BE_STRONG,
+            },
+        },
+        confirm_password: {
+            notEmpty: {
+                errorMessage: USERS_MESSAGES.CONFIRM_PASSWORD_IS_REQUIRED,
+            },
+            isString: {
+                errorMessage: USERS_MESSAGES.CONFIRM_PASSWORD_MUST_BE_STRING,
+            },
+            custom: {
+                options: (value, { req }) => {
+                    if (value !== req.body.password) {
+                        throw new Error(USERS_MESSAGES.CONFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD);
+                    }
+                    return true;
+                },
+            },
+        },
+    },
+    ['body'],
+);
 const isAdminValidator = (req, res, next) => {
     const { decoded_authorization } = req;
     if (decoded_authorization.role !== 'admin') {
@@ -323,4 +384,6 @@ exports.refreshTokenValidator = validate(checkRefreshTokenValidator);
 exports.forgotPasswordValidator = validate(checkForgotPasswordValidator);
 exports.VerifyForgotPasswordTokenValidator = validate(checkVerifyForgotPasswordTokenValidator);
 exports.ResetPasswordValidator = validate(checkResetPasswordValidator);
+exports.UserExistValidator = validate(checkUserExistValidator);
+exports.ChangePasswordValidator = validate(checkChangePasswordValidator);
 exports.isAdminValidator = wrapController(isAdminValidator);
