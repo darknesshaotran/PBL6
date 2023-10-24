@@ -367,6 +367,49 @@ const checkChangePasswordValidator = checkSchema(
     },
     ['body'],
 );
+
+const checkUpdateProfileValidator = checkSchema(
+    {
+        firstname: {
+            optional: true,
+            isString: {
+                errorMessage: USERS_MESSAGES.NAME_MUST_BE_STRING,
+            },
+            isLength: {
+                options: {
+                    max: 50,
+                    min: 1,
+                },
+                errorMessage: USERS_MESSAGES.NAME_LENGTH_FROM_1_TO_50,
+            },
+            trim: true,
+        },
+        lastname: {
+            optional: true,
+            isString: {
+                errorMessage: USERS_MESSAGES.NAME_MUST_BE_STRING,
+            },
+            isLength: {
+                options: {
+                    max: 50,
+                    min: 1,
+                },
+                errorMessage: USERS_MESSAGES.NAME_LENGTH_FROM_1_TO_50,
+            },
+            trim: true,
+        },
+        phoneNumber: {
+            optional: true,
+            isString: {
+                errorMessage: USERS_MESSAGES.PHONENUMBER_MUST_BE_STRING,
+            },
+            isMobilePhone: {
+                errorMessage: 'Phone number is invalid',
+            },
+        },
+    },
+    ['body'],
+);
 const isAdminValidator = (req, res, next) => {
     const { decoded_authorization } = req;
     if (decoded_authorization.role !== 'admin') {
@@ -386,4 +429,5 @@ exports.VerifyForgotPasswordTokenValidator = validate(checkVerifyForgotPasswordT
 exports.ResetPasswordValidator = validate(checkResetPasswordValidator);
 exports.UserExistValidator = validate(checkUserExistValidator);
 exports.ChangePasswordValidator = validate(checkChangePasswordValidator);
+exports.UpdateProfileValidator = validate(checkUpdateProfileValidator);
 exports.isAdminValidator = wrapController(isAdminValidator);

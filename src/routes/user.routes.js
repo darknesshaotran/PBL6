@@ -10,6 +10,7 @@ const {
     ResetPasswordValidator,
     UserExistValidator,
     ChangePasswordValidator,
+    UpdateProfileValidator,
 } = require('../middlewares/user.middlewares.js');
 
 const router = Router();
@@ -34,5 +35,10 @@ router.post(
     ChangePasswordValidator,
     wrapController(userControllers.changePassword),
 );
-router.post('/media', accessTokenValidator, wrapController(userControllers.upload));
+router.put(
+    '/updateProfile',
+    accessTokenValidator,
+    UpdateProfileValidator,
+    wrapController(userControllers.updateProfile),
+); // ko update avatar trong này
 module.exports = router;

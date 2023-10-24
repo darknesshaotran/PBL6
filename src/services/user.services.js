@@ -142,5 +142,21 @@ class UserServices {
             message: USERS_MESSAGES.CHANGE_PASS_SUCCESS,
         };
     }
+    async updateProfile(userID, data) {
+        await db.inforUser.update(
+            {
+                ...data,
+                updatedAt: new Date(),
+            },
+            {
+                where: { id_account: userID },
+            },
+        );
+
+        return {
+            success: true,
+            message: USERS_MESSAGES.UPDATE_MY_PROFILE_SUCCESS,
+        };
+    }
 }
 module.exports = new UserServices();

@@ -68,9 +68,11 @@ class AccountController {
         const result = await userServices.changePassword(userID, password);
         res.json(result);
     }
-
-    async upload(req, res, next) {
-        const result = await uploadImage(req);
+    async updateProfile(req, res, next) {
+        const { decoded_authorization } = req;
+        const userID = decoded_authorization.userID;
+        const data = req.body;
+        const result = await userServices.updateProfile(userID, data);
         res.json(result);
     }
 }
