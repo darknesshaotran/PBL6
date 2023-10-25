@@ -28,5 +28,11 @@ class OrderController {
         const result = await orderServices.OrderDetails(id_order);
         res.json(result);
     }
+    async HistoryOrder(req, res, next) {
+        const { decoded_authorization } = req;
+        const userID = decoded_authorization.userID;
+        const result = await orderServices.HistoryOrder(userID);
+        res.json(result);
+    }
 }
 module.exports = new OrderController();
