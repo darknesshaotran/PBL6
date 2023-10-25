@@ -23,5 +23,10 @@ class OrderController {
         const result = await orderServices.createOneItemOrder(Item, userID);
         res.json(result);
     }
+    async OrderDetails(req, res, next) {
+        const { id_order } = req.params;
+        const result = await orderServices.OrderDetails(id_order);
+        res.json(result);
+    }
 }
 module.exports = new OrderController();

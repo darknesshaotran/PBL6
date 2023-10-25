@@ -54,5 +54,36 @@ class OrderServices {
             message: "create one item 's order successfully",
         };
     }
+
+    async OrderDetails(id_order) {
+        const order = await db.Order.findOne({
+            where: { id: id_order },
+            attributes: {
+                exclude: ['createdAt', 'updatedAt'],
+            },
+            include: [
+                {
+                    model: db.Shoes,
+                    through: {
+                        attributes: ['quantity', 'fixed_price'],
+                        as: 'order_item_infor',
+                    },
+                    as: 'Order_items',
+                    attributes: ['id', 'name', 'price', 'size', 'color'],
+                },
+                { model: db.Status, as: 'Status', attributes: ['status'] },
+            ],
+        });
+        var totalPrice = 0;
+
+        for (let i = 0; i < order.Order_items.length; i++) {
+            totalPrice += order.Order_items[i].order_item_infor.fixed_price;
+        }
+        const Order = JSON.parse(JSON.stringify(order));
+        return {
+            success: true,
+            result: { ...Order, totalPrice },
+        };
+    }
 }
 module.exports = new OrderServices();

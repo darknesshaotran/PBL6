@@ -16,10 +16,6 @@ class CartServices {
             id_cart: cart.id,
             quantity: quantity,
         });
-        // const shoes = await db.Shoes.findOne({ where: { id: id_shoes } });
-        // await db.Shoes.update({
-        //     amount: shoes.amount - quantity,
-        // });
         return {
             success: true,
             messsage: 'added to cart successfully',
