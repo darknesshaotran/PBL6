@@ -58,6 +58,7 @@ class OrderServices {
             id_account: userID,
             id_status: 1,
         });
+        var totalPrice = 0;
         await this.createOrderItem(Item, order);
         totalPrice += Item.price * Item.quantity;
         await db.Order.update(
@@ -96,17 +97,12 @@ class OrderServices {
             ],
         });
 
-        ////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////MIDDLEWARE
         if (!order) throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'Order not found' });
-        var totalPrice = 0;
 
-        for (let i = 0; i < order.Order_items.length; i++) {
-            totalPrice += order.Order_items[i].order_item_infor.fixed_price;
-        }
-        const Order = JSON.parse(JSON.stringify(order));
         return {
             success: true,
-            result: { ...Order, totalPrice },
+            result: order,
         };
     }
     async HistoryOrder(userID) {
@@ -128,6 +124,53 @@ class OrderServices {
         return {
             success: true,
             result: order,
+        };
+    }
+    async CancelOrder(id_order) {
+        const order = await db.Order.findOne({
+            where: { id: id_order },
+            include: [
+                {
+                    model: db.Shoes,
+                    through: {
+                        attributes: ['quantity', 'fixed_price'],
+                        as: 'order_item_infor',
+                    },
+                    as: 'Order_items',
+                    attributes: ['id', 'name', 'price', 'size', 'color'],
+                },
+                { model: db.Status, as: 'Status', attributes: ['status'] },
+            ],
+        });
+        //////////////////////////////// MIDDLEWARE
+        if (!order) throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'Order not found' });
+        if (order.id_status > 1)
+            throw new ErrorsWithStatus({
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+                message: 'can not cancel order anymore',
+            });
+        //////////////////////////////
+        for (let i = 0; i < order.Order_items.length; i++) {
+            // khôi phục amount của shoes ở đây
+            const shoes = await db.Shoes.findOne({ where: { id: order.Order_items[i].id } });
+            await db.Shoes.update(
+                {
+                    amount: shoes.amount + order.Order_items[i].order_item_infor.quantity,
+                },
+                {
+                    where: { id: order.Order_items[i].id },
+                },
+            );
+        }
+        await db.Order.update(
+            { id_status: 5 },
+            {
+                where: { id: id_order },
+            },
+        );
+        return {
+            success: true,
+            message: 'cancel order successfully',
         };
     }
 }

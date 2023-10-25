@@ -34,5 +34,10 @@ class OrderController {
         const result = await orderServices.HistoryOrder(userID);
         res.json(result);
     }
+    async CancelOrder(req, res, next) {
+        const { id_order } = req.params;
+        const result = await orderServices.CancelOrder(id_order);
+        res.json(result);
+    }
 }
 module.exports = new OrderController();
