@@ -48,5 +48,42 @@ class CartServices {
             Cart: Cart,
         };
     }
+    async updateQuantityItem(userID, quantity, id_shoes) {
+        const cart = await db.Cart.findOne({ where: { id_account: userID } });
+        if (quantity === 0) {
+            await db.Cart_Item.destroy({
+                where: {
+                    id_shoes: id_shoes,
+                    id_cart: cart.id,
+                },
+            });
+            return {
+                success: true,
+                message: 'delete item already',
+            };
+        }
+        await db.Cart_Item.update(
+            { quantity: quantity },
+            {
+                where: {
+                    id_shoes: id_shoes,
+                    id_cart: cart.id,
+                },
+            },
+        );
+        return {
+            success: true,
+            message: 'update quantity successfully',
+        };
+    }
+    async deleteQuantityItem(id_cartItem) {
+        await db.Cart_Item.destroy({
+            where: { id: id_cartItem },
+        });
+        return {
+            success: true,
+            message: 'delete shoes successfully',
+        };
+    }
 }
 module.exports = new CartServices();
