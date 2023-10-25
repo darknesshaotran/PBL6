@@ -1,0 +1,27 @@
+const ErrorsWithStatus = require('../constants/Error');
+const HTTP_STATUS = require('../constants/httpStatus');
+const USERS_MESSAGES = require('../constants/messages');
+const { uploadImage, handleFormData } = require('../utils/fileHandle');
+const shoesServices = require('../services/shoes.services');
+const cartServices = require('../services/cart.services');
+const orderServices = require('../services/order.services');
+
+class OrderController {
+    async createOrderWithCartItem(req, res, next) {
+        // cartItems: [ { id_shoes, quantity, id_cartItem, price }]
+        const { cartItems } = req.body;
+        const { decoded_authorization } = req;
+        const userID = decoded_authorization.userID;
+        const result = await orderServices.createOrderWithCartItem(cartItems, userID);
+        res.json(result);
+    }
+    async createOneItemOrder(req, res, next) {
+        // Item: { id_shoes, quantity,  price }
+        const { Item } = req.body;
+        const { decoded_authorization } = req;
+        const userID = decoded_authorization.userID;
+        const result = await orderServices.createOneItemOrder(Item, userID);
+        res.json(result);
+    }
+}
+module.exports = new OrderController();
