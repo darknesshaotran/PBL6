@@ -46,9 +46,15 @@ class OrderController {
         const result = await orderServices.CancelOrder(id_order);
         res.json(result);
     }
+    // ADMIN
     async UpdateStatusOrder(req, res, next) {
         const { id_order } = req.params;
         const result = await orderServices.UpdateStatusOrder(id_order);
+        res.json(result);
+    }
+    async getAllStatusOrderList(req, res, next) {
+        const { id_status } = req.params;
+        const result = await orderServices.getAllStatusOrderList(id_status);
         res.json(result);
     }
 }

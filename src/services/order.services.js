@@ -217,5 +217,26 @@ class OrderServices {
             message: "Updated order's status successfully",
         };
     }
+    async getAllStatusOrderList(id_status) {
+        const orders = await db.Order.findAll({
+            where: { id_status: id_status },
+            include: [
+                {
+                    model: db.Shoes,
+                    through: {
+                        attributes: ['quantity', 'fixed_price'],
+                        as: 'order_item_infor',
+                    },
+                    as: 'Order_items',
+                    attributes: ['id', 'name', 'price', 'size', 'color'],
+                },
+                { model: db.Status, as: 'Status', attributes: ['status'] },
+            ],
+        });
+        return {
+            success: true,
+            result: orders,
+        };
+    }
 }
 module.exports = new OrderServices();

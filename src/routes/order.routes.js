@@ -11,6 +11,9 @@ router.get('/history', accessTokenValidator, wrapController(orderControllers.His
 router.get('/:id_order', accessTokenValidator, wrapController(orderControllers.OrderDetails));
 router.put('/cancel/:id_order', accessTokenValidator, wrapController(orderControllers.CancelOrder));
 router.get('/status/:id_status', accessTokenValidator, wrapController(orderControllers.StatusOrder));
+
+// admin
+router.get('/All/status/:id_status', wrapController(orderControllers.getAllStatusOrderList));
 router.put('/updateStatus/:id_order', accessTokenValidator, wrapController(orderControllers.UpdateStatusOrder));
 
 module.exports = router;
