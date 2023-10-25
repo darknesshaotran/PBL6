@@ -173,5 +173,49 @@ class OrderServices {
             message: 'cancel order successfully',
         };
     }
+    async StatusOrder(userID, id_status) {
+        const order = await db.Order.findAll({
+            where: { id_account: userID, id_status: id_status },
+            include: [
+                {
+                    model: db.Shoes,
+                    through: {
+                        attributes: ['quantity', 'fixed_price'],
+                        as: 'order_item_infor',
+                    },
+                    as: 'Order_items',
+                    attributes: ['id', 'name', 'price', 'size', 'color'],
+                },
+                { model: db.Status, as: 'Status', attributes: ['status'] },
+            ],
+        });
+        return {
+            success: true,
+            result: order,
+        };
+    }
+    async UpdateStatusOrder(id_order) {
+        const order = await db.Order.findOne({
+            where: { id: id_order },
+        });
+        if (order.id_status >= 5) {
+            throw new ErrorsWithStatus({
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+                message: `can't change order's status anymore`,
+            });
+        }
+        await db.Order.update(
+            {
+                id_status: order.id_status + 1,
+            },
+            {
+                where: { id: id_order },
+            },
+        );
+        return {
+            success: true,
+            message: "Updated order's status successfully",
+        };
+    }
 }
 module.exports = new OrderServices();

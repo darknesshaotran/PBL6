@@ -34,9 +34,21 @@ class OrderController {
         const result = await orderServices.HistoryOrder(userID);
         res.json(result);
     }
+    async StatusOrder(req, res, next) {
+        const { decoded_authorization } = req;
+        const userID = decoded_authorization.userID;
+        const { id_status } = req.params;
+        const result = await orderServices.StatusOrder(userID, id_status);
+        res.json(result);
+    }
     async CancelOrder(req, res, next) {
         const { id_order } = req.params;
         const result = await orderServices.CancelOrder(id_order);
+        res.json(result);
+    }
+    async UpdateStatusOrder(req, res, next) {
+        const { id_order } = req.params;
+        const result = await orderServices.UpdateStatusOrder(id_order);
         res.json(result);
     }
 }

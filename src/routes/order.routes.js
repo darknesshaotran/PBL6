@@ -9,6 +9,8 @@ router.post('/createOneItem', accessTokenValidator, wrapController(orderControll
 router.post('/create', accessTokenValidator, wrapController(orderControllers.createOrderWithCartItem));
 router.get('/history', accessTokenValidator, wrapController(orderControllers.HistoryOrder));
 router.get('/:id_order', accessTokenValidator, wrapController(orderControllers.OrderDetails));
-router.delete('/cancel/:id_order', accessTokenValidator, wrapController(orderControllers.CancelOrder));
+router.put('/cancel/:id_order', accessTokenValidator, wrapController(orderControllers.CancelOrder));
+router.get('/status/:id_status', accessTokenValidator, wrapController(orderControllers.StatusOrder));
+router.put('/updateStatus/:id_order', accessTokenValidator, wrapController(orderControllers.UpdateStatusOrder));
 
 module.exports = router;
