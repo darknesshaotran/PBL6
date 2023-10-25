@@ -46,10 +46,12 @@ class ShoesController {
     async deleteShoes(req, res, next) {
         const { id_shoes } = req.params;
         const result = await shoesServices.deleteShoes(id_shoes);
+        res.json(result);
     }
     async updateShoesInfor(req, res, next) {
         const { id_shoes } = req.params;
         const result = await shoesServices.updateShoesInfor(id_shoes, req.body);
+        res.json(result);
     }
     async updateShoesImage(req, res, next) {
         const { id_shoes } = req.params;
