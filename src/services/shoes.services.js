@@ -50,7 +50,7 @@ class ShoesServices {
             limit: limit,
             order: order,
             attributes: {
-                exclude: ['id_category', 'id_brand', 'createdAt', 'updatedAt'],
+                exclude: ['id_category', 'id_brand', 'createdAt', 'updatedAt', 'description', 'color', 'size'],
             },
             include: [
                 { model: db.Brand, as: 'Brand', attributes: ['id', 'name'] },
@@ -69,7 +69,14 @@ class ShoesServices {
                 totalStar += Number(Rating[i].star);
             }
             totalStar = Math.floor(totalStar / Rating.length);
+
+            const image = await db.Image.findAll({
+                where: { id_shoes: Shoes[i].id },
+            });
+
+            const Image = JSON.parse(JSON.stringify(image));
             Shoes[i].totalStar = totalStar ? totalStar : 0;
+            Shoes[i].image = Image[0] ? Image[0].image : '';
         }
         const totalPages = Math.ceil(Count / limit);
         return {

@@ -28,7 +28,7 @@ router.post(
 );
 router.post('/reset-password', ResetPasswordValidator, wrapController(userControllers.resetPassword));
 router.get('/profile/me', accessTokenValidator, wrapController(userControllers.getMyprofile));
-router.get('/profile/:userID', accessTokenValidator, UserExistValidator, wrapController(userControllers.getProfile));
+router.get('/profile/:userID', UserExistValidator, wrapController(userControllers.getProfile));
 router.post(
     '/change-password',
     accessTokenValidator,
