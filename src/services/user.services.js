@@ -49,6 +49,7 @@ class UserServices {
         return {
             success: true,
             message: USERS_MESSAGES.LOGIN_SUCCESS,
+            role: role,
             accessToken,
             refreshToken,
         };
