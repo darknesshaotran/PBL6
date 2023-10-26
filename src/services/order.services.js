@@ -26,10 +26,12 @@ class OrderServices {
             },
         );
     }
-    async createOrderWithCartItem(cartItems, userID) {
+    async createOrderWithCartItem(cartItems, userID, address, phoneNumber) {
         const order = await db.Order.create({
             id_account: userID,
             id_status: 1,
+            order_address: address,
+            order_phoneNumber: phoneNumber,
         });
         var totalPrice = 0;
         for (let i = 0; i < cartItems.length; i++) {
@@ -53,10 +55,12 @@ class OrderServices {
             message: 'create Order with cart successfully',
         };
     }
-    async createOneItemOrder(Item, userID) {
+    async createOneItemOrder(Item, userID, address, phoneNumber) {
         const order = await db.Order.create({
             id_account: userID,
             id_status: 1,
+            order_address: address,
+            order_phoneNumber: phoneNumber,
         });
         var totalPrice = 0;
         await this.createOrderItem(Item, order);

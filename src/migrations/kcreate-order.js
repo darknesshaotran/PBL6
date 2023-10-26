@@ -36,6 +36,9 @@ module.exports = {
             order_address: {
                 type: Sequelize.STRING,
             },
+            order_phoneNumber: {
+                type: Sequelize.STRING,
+            },
             totalPrice: {
                 type: Sequelize.INTEGER,
             },
