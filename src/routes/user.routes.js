@@ -12,7 +12,7 @@ const {
     ChangePasswordValidator,
     UpdateProfileValidator,
 } = require('../middlewares/user.middlewares.js');
-
+const { FormdataValidator } = require('../middlewares/Formdata.middlewares');
 const router = Router();
 
 const userControllers = require('../controllers/user.controllers');
@@ -42,5 +42,5 @@ router.put(
     UpdateProfileValidator,
     wrapController(userControllers.updateProfile),
 ); // ko update avatar trong này
-router.put('/update-avatar', accessTokenValidator, wrapController(userControllers.changeAvatar));
+router.put('/update-avatar', accessTokenValidator, FormdataValidator, wrapController(userControllers.changeAvatar));
 module.exports = router;

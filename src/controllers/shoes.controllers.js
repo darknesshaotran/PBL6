@@ -1,7 +1,7 @@
 const ErrorsWithStatus = require('../constants/Error');
 const HTTP_STATUS = require('../constants/httpStatus');
 const USERS_MESSAGES = require('../constants/messages');
-const { uploadImage, handleFormData } = require('../utils/fileHandle');
+const { uploadImage } = require('../utils/fileHandle');
 const shoesServices = require('../services/shoes.services');
 
 class ShoesController {
@@ -25,10 +25,8 @@ class ShoesController {
         res.json(result);
     }
     async addShoes(req, res, next) {
-        const { urls, fields } = await uploadImage(req);
-        const Fields = JSON.parse(JSON.stringify(fields));
+        const { urls, Fields } = req.formdata;
         const { id_category, id_brand, name, price, import_price, amount, description, color, size } = Fields;
-
         const result = await shoesServices.addShoes(
             id_category,
             id_brand,
@@ -55,7 +53,7 @@ class ShoesController {
     }
     async updateShoesImage(req, res, next) {
         const { id_shoes } = req.params;
-        const { urls, fields } = await uploadImage(req);
+        const { urls, Fields } = req.formdata;
         console.log(urls);
         const result = await shoesServices.updateShoesImages(id_shoes, urls);
         res.json(result);

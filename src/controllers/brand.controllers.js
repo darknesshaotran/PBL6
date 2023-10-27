@@ -12,8 +12,7 @@ class BrandController {
         res.json(result);
     }
     async addBrand(req, res, next) {
-        const { urls, fields } = await uploadImage(req);
-        const Fields = JSON.parse(JSON.stringify(fields));
+        const { urls, Fields } = req.formdata;
         const { name } = Fields;
         const result = await brandServices.addBrand(urls, name);
         res.json(result);

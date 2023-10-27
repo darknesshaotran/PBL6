@@ -12,8 +12,7 @@ class CategoryController {
         res.json(result);
     }
     async addCategory(req, res, next) {
-        const { urls, fields } = await uploadImage(req);
-        const Fields = JSON.parse(JSON.stringify(fields));
+        const { urls, Fields } = req.formdata;
         const { name } = Fields;
         const result = await categoryServices.addCategory(urls, name);
         res.json(result);
