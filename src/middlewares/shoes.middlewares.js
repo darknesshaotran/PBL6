@@ -76,5 +76,124 @@ const checkAddShoesValidator = async (req, res, next) => {
 
     next();
 };
+const checkShoesExistsValidator = checkSchema(
+    {
+        id_shoes: {
+            custom: {
+                options: async (value) => {
+                    const shoes = await db.Shoes.findOne({
+                        where: {
+                            id: value,
+                        },
+                        attributes: {
+                            exclude: ['id_category', 'id_brand', 'createdAt', 'updatedAt'],
+                        },
+                    });
+                    if (!shoes) {
+                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'shoes not found' });
+                    }
+                    return true;
+                },
+            },
+        },
+    },
+    ['params'],
+);
+const checkUpdateShoesInfor = checkSchema(
+    {
+        id_category: {
+            optional: true,
+            isNumeric: {
+                errorMessage: 'category id must be a number',
+            },
+            custom: {
+                options: async (value) => {
+                    const category = await db.Category.findOne({
+                        where: {
+                            id: value,
+                        },
+                        attributes: {
+                            exclude: ['createdAt', 'updatedAt'],
+                        },
+                    });
+                    if (!category) {
+                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'category not found' });
+                    }
+                    return true;
+                },
+            },
+        },
+        id_brand: {
+            optional: true,
+            isNumeric: {
+                errorMessage: 'brand id must be a number',
+            },
+            custom: {
+                options: async (value) => {
+                    const brand = await db.Brand.findOne({
+                        where: {
+                            id: value,
+                        },
+                        attributes: {
+                            exclude: ['createdAt', 'updatedAt'],
+                        },
+                    });
+                    if (!brand) {
+                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'brand not found' });
+                    }
+                    return true;
+                },
+            },
+        },
+        name: {
+            optional: true,
+            isString: {
+                errorMessage: 'name must be a string',
+            },
+            isLength: {
+                options: {
+                    max: 50,
+                    min: 1,
+                },
+                errorMessage: 'name must be between 1 and 50 chars long',
+            },
+            trim: true,
+        },
+        price: {
+            optional: true,
+            isNumeric: {
+                errorMessage: 'price must be a number',
+            },
+        },
+        import_price: {
+            optional: true,
+            isNumeric: {
+                errorMessage: 'import price must be a number',
+            },
+        },
+        amount: {
+            optional: true,
+            isNumeric: {
+                errorMessage: 'amount must be a number',
+            },
+        },
+        color: {
+            optional: true,
+            isString: {
+                errorMessage: 'color must be a string',
+            },
+            trim: true,
+        },
+        size: {
+            optional: true,
+            isNumeric: {
+                errorMessage: 'size must be a number',
+            },
+        },
+    },
+    ['body'],
+);
 
 exports.AddShoesValidator = wrapController(checkAddShoesValidator);
+exports.ShoesExistsValidator = validate(checkShoesExistsValidator);
+exports.UpdateShoesInfor = validate(checkUpdateShoesInfor);
