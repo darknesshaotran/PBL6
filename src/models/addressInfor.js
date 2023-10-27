@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
     addressInfor.init(
         {
             id_account: DataTypes.INTEGER,
-            address: DataTypes.DATE,
-            phoneNumber: DataTypes.DATE,
+            address: DataTypes.STRING,
+            phoneNumber: DataTypes.STRING,
         },
         {
             sequelize,
