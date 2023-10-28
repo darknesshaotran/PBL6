@@ -4,7 +4,6 @@ const ErrorHandler = (err, req, res, next) => {
     console.log('error', err);
     try {
         if (err.name === 'ErrorsWithStatus') {
-            console.log(2);
             return res.status(err.status).json({ success: false, message: err.message });
         }
         return res.status(HTTP_STATUS.INTERAL_SERVER_ERROR).json({

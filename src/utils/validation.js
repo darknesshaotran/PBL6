@@ -10,7 +10,6 @@ const validate = (validation) => {
             if (errors.isEmpty()) {
                 return next();
             }
-            console.log(errorsObject);
             for (const key in errorsObject) {
                 errorsObject[key].message = errorsObject[key].msg;
                 delete errorsObject[key].msg;

@@ -41,7 +41,6 @@ class OrderServices {
                 where: { id: cartItems[i].id_cartItem },
             });
         }
-        // console.log(totalPrice);
         await db.Order.update(
             {
                 totalPrice: totalPrice,

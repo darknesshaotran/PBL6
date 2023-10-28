@@ -54,7 +54,6 @@ class ShoesController {
     async updateShoesImage(req, res, next) {
         const { id_shoes } = req.params;
         const { urls, Fields } = req.formdata;
-        console.log(urls);
         const result = await shoesServices.updateShoesImages(id_shoes, urls);
         res.json(result);
     }

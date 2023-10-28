@@ -35,7 +35,6 @@ class ShoesServices {
             ...categoryCondition,
             ...searchCondition,
         };
-        console.log(options);
         const order = [['price', isDesc ? 'DESC' : 'ASC']];
         const Count = await db.Shoes.count({
             where: {
