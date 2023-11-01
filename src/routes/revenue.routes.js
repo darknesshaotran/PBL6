@@ -8,6 +8,7 @@ const revenueControllers = require('../controllers/revenue.controllers');
 const { TimeValidator } = require('../middlewares/revenue.middlewares');
 const router = Router();
 
+router.get('/customer', TimeValidator, wrapController(revenueControllers.getRevenueOfCustommer));
 router.get('/', TimeValidator, wrapController(revenueControllers.getRevenuesByTime));
 
 module.exports = router;

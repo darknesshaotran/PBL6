@@ -15,5 +15,11 @@ class RevenueController {
         const result = await revenueServices.getRevenuesByTime(startDate, endDate);
         res.json(result);
     }
+    async getRevenueOfCustommer(req, res, next) {
+        const { startDate, endDate } = req.query;
+
+        const result = await revenueServices.getRevenueOfCustommer(startDate, endDate);
+        res.json(result);
+    }
 }
 module.exports = new RevenueController();
