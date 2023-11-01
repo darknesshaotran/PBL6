@@ -5,6 +5,7 @@ const route = require('./routes/index.js');
 const conenctionDatabase = require('../connect_db.js');
 const ErrorHandler = require('../src/middlewares/error.middlewares.js');
 const dotenv = require('dotenv');
+// const sendEmail = require('./utils/Email.js');
 dotenv.config();
 const PORT = process.env.PORT || 8888;
 const app = express();
@@ -14,6 +15,10 @@ const corsOptions = {
     origin: process.env.CLIENT_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
 };
+// const hehe = async () => {
+//     await sendEmail('hello', 'subject', 'daikisatou131@gmail.com');
+// };
+// hehe();
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
