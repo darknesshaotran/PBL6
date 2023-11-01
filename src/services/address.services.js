@@ -10,7 +10,7 @@ class AddressService {
         });
         return {
             success: true,
-            brands: addresses,
+            addresses: addresses,
         };
     }
     async deleteAddress(id_address) {
