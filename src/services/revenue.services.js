@@ -7,7 +7,22 @@ const HTTP_STATUS = require('../constants/httpStatus');
 
 class RevenueServices {
     async getRevenuesByTime(startTime, endTime) {
-        // trả về tổng doanh thu, tổng lợi nhuận, danh sách các đơn hàng (success)
+        const orders = await db.Order.findAll({
+            where: {
+                id_status: 4,
+                createdAt: {
+                    [Op.between]: [startTime, endTime],
+                },
+            },
+        });
+        const totalRevenue = orders.reduce((acc, order) => acc + order.totalPrice, 0);
+        return {
+            success: true,
+            result: {
+                orders: orders,
+                totalRevenue: totalRevenue,
+            },
+        };
     }
 
     async getRevenueOfCustommer(startTime, endTime) {
