@@ -1,8 +1,5 @@
-const ErrorsWithStatus = require('../constants/Error');
 const userServices = require('../services/user.services');
-const HTTP_STATUS = require('../constants/httpStatus');
 const USERS_MESSAGES = require('../constants/messages');
-const { uploadImage } = require('../utils/fileHandle');
 
 class AccountController {
     async register(req, res, next) {

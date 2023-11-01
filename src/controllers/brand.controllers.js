@@ -1,6 +1,4 @@
-const ErrorsWithStatus = require('../constants/Error');
 const brandServices = require('../services/brand.services');
-const { uploadImage } = require('../utils/fileHandle');
 class BrandController {
     async getBrandList(req, res, next) {
         const result = await brandServices.getBrandList();

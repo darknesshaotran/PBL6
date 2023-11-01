@@ -1,11 +1,6 @@
 const db = require('../models');
 const { Op } = require('sequelize');
 const ErrorsWithStatus = require('../constants/Error');
-const Account = require('../models/account');
-const inforUser = require('../models/inforuser');
-const hashPassword = require('../utils/crypto');
-const USERS_MESSAGES = require('../constants/messages');
-const { signAccessToken, signReFreshToken, verifyToken, signForgotPasswordToken } = require('../utils/JWT');
 const HTTP_STATUS = require('../constants/httpStatus');
 
 class OrderServices {

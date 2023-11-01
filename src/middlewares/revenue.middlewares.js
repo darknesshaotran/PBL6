@@ -1,8 +1,5 @@
 const { checkSchema } = require('express-validator');
-const HTTP_STATUS = require('../constants/httpStatus');
-const ErrorsWithStatus = require('../constants/Error');
 const validate = require('../utils/validation');
-const db = require('../models');
 const USERS_MESSAGES = require('../constants/messages');
 
 const checkTimeValidator = checkSchema(

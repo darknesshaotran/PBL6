@@ -1,4 +1,3 @@
-const ErrorsWithStatus = require('../constants/Error');
 const addressServices = require('../services/address.services');
 const AddressService = require('../services/address.services');
 class AddressController {

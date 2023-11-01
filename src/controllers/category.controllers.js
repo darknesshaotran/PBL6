@@ -1,6 +1,4 @@
-const ErrorsWithStatus = require('../constants/Error');
 const categoryServices = require('../services/category.services');
-const { uploadImage } = require('../utils/fileHandle');
 class CategoryController {
     async getCategoryList(req, res, next) {
         const result = await categoryServices.getCategoryList();
