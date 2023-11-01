@@ -19,8 +19,8 @@ class RevenueServices {
         return {
             success: true,
             result: {
-                orders: orders,
                 totalRevenue: totalRevenue,
+                orders: orders,
             },
         };
     }
@@ -84,7 +84,70 @@ class RevenueServices {
     }
 
     async getRevenueOfProduction(startTime, endTime) {
-        // TODO: Implement code to get revenue by id
+        const orders = await db.Order.findAll({
+            where: {
+                id_status: 4,
+                createdAt: {
+                    [Op.between]: [startTime, endTime],
+                },
+            },
+            include: [
+                {
+                    model: db.Shoes,
+                    through: {
+                        attributes: ['quantity', 'fixed_price'],
+                        as: 'order_item_infor',
+                    },
+                    as: 'Order_items',
+                    attributes: ['id', 'name', 'price', 'size', 'color'],
+                },
+            ],
+        });
+
+        const products = orders.reduce((product, order) => {
+            const Order = JSON.parse(JSON.stringify(order));
+            const Order_items = Order.Order_items;
+            Order_items.forEach((item) => {
+                const productId = item.id;
+                const productName = item.name;
+                const quantity = item.order_item_infor.quantity;
+                const price = item.order_item_infor.fixed_price;
+
+                if (product[productId]) {
+                    product[productId].quantity += quantity;
+                    product[productId].totalPrice += price;
+                } else {
+                    product[productId] = {
+                        id: productId,
+                        name: productName,
+                        quantity: quantity,
+                        totalPrice: price,
+                    };
+                }
+            });
+
+            return product;
+        }, {});
+
+        const sortedProducts = Object.values(products)
+            .sort((a, b) => b.quantity - a.quantity)
+            .slice(0, 20);
+        for (let i = 0; i < sortedProducts.length; i++) {
+            const image = await db.Image.findOne({
+                where: { id_shoes: sortedProducts[i].id },
+            });
+            const Image = JSON.parse(JSON.stringify(image));
+            sortedProducts[i].Image = Image ? Image.image : '';
+        }
+        const totalRevenue = orders.reduce((acc, order) => acc + order.totalPrice, 0);
+
+        return {
+            success: true,
+            result: {
+                products: sortedProducts,
+                totalRevenue: totalRevenue,
+            },
+        };
     }
 
     async getRevenueOfYear(revenueData) {

@@ -69,13 +69,13 @@ class ShoesServices {
             }
             totalStar = Math.floor(totalStar / Rating.length);
 
-            const image = await db.Image.findAll({
+            const image = await db.Image.findOne({
                 where: { id_shoes: Shoes[i].id },
             });
 
             const Image = JSON.parse(JSON.stringify(image));
             Shoes[i].totalStar = totalStar ? totalStar : 0;
-            Shoes[i].image = Image[0] ? Image[0].image : '';
+            Shoes[i].image = Image ? Image.image : '';
         }
         const totalPages = Math.ceil(Count / limit);
         return {
