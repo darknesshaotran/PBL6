@@ -6,7 +6,9 @@ const hashPassword = require('../utils/crypto');
 const USERS_MESSAGES = require('../constants/messages');
 const { signAccessToken, signReFreshToken, verifyToken, signForgotPasswordToken } = require('../utils/JWT');
 const HTTP_STATUS = require('../constants/httpStatus');
-
+const sendEmail = require('../utils/Email');
+const dotenv = require('dotenv');
+dotenv.config();
 class UserServices {
     async findUserLogin(email, password) {
         const user = await db.Account.findOne({ where: { email: email, password: hashPassword(password) } });
@@ -33,6 +35,7 @@ class UserServices {
         await db.Cart.create({
             id_account: user.id,
         });
+        await sendEmail('<h1 style="color:red">😍 register successfully 😍</h1>', 'PBL6_message', data.email);
         return {
             success: true,
             message: USERS_MESSAGES.REGISTER_SUCCESS,
@@ -87,9 +90,13 @@ class UserServices {
             },
             { where: { id: userID } },
         );
-        ///// đoạn code send email ở đây (làm sau)
-        ////ở đây console log tạm thời
+
         console.log('forgot_password_token: ', forgot_password_token);
+        await sendEmail(
+            `<h1>🕵️ click <a href="${process.env.CLIENT_URL}/verify_forgot_password_token?forgot_password_token=${forgot_password_token}">here</a> to reset password </h1>`,
+            'PBL6_message',
+            email,
+        );
         return {
             success: true,
             message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD,

@@ -17,7 +17,7 @@ const sendEmail = async (content, subject, emailReceiver) => {
         from: process.env.EMAIL_SERVER,
         to: emailReceiver,
         subject: subject,
-        text: `<p>${content}</p>`,
+        html: `<p>${content}</p>`,
     };
 
     const info = await transporter.sendMail(mailOptions);
