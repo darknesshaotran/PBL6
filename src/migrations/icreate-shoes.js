@@ -42,7 +42,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
             },
             description: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT,
             },
             color: {
                 type: Sequelize.STRING,

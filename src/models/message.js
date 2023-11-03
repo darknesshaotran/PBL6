@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         {
             id_reciever: DataTypes.INTEGER,
             id_sender: DataTypes.INTEGER,
+            content: DataTypes.TEXT,
         },
         {
             sequelize,
