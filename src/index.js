@@ -5,13 +5,14 @@ const route = require('./routes/index.js');
 const conenctionDatabase = require('../connect_db.js');
 const ErrorHandler = require('../src/middlewares/error.middlewares.js');
 const dotenv = require('dotenv');
+const initSocket = require('./utils/socket.js');
 dotenv.config();
 const PORT = process.env.PORT || 8888;
 const app = express();
 const httpServer = createServer(app);
 
 const corsOptions = {
-    origin: process.env.CLIENT_URL,
+    origin: 'http://127.0.0.1:5500',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
 };
 app.use(cors(corsOptions));
@@ -23,4 +24,5 @@ route(app);
 
 // note : dat middlewares error handler tai noi cuoi cung
 app.use(ErrorHandler);
+initSocket(httpServer);
 httpServer.listen(PORT, () => console.log(`listening on  http://localhost:${PORT}`));
