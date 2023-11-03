@@ -14,17 +14,27 @@ const initSocket = (httpServer) => {
     const users = {};
     io.on('connection', (socket) => {
         console.log(`user ${socket.id} connected`);
+        const userID = socket.handshake.auth.id;
+        // kiểm tra đã đăng nhập hay chưa
+        if (userID) {
+            users[userID] = {
+                socket_id: socket.id,
+            };
+            // server lắng nghe sự kiện gửi tin nhắn của socket A, gửi đến socket B sự kiện receive_message
+            socket.on('send_message', (data) => {
+                const socket_id_receiver = users[data.id_receiver].socket_id;
+                if (socket_id_receiver) {
+                    io.to(socket_id_receiver).emit('receive_message', { content: data.content, id_sender: userID });
+                }
+            });
+        }
 
         socket.on('error', (error) => {
             console.log('error socket:', error);
         });
-        socket.on('hello', (data) => {
-            console.log('hello', data);
-        });
-
         socket.on('disconnect', () => {
+            delete users[userID];
             console.log(`user ${socket.id} disconnected`);
-            // console.log(users)
         });
     });
 };
