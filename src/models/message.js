@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            Message.belongsTo(models.Account, { foreignKey: 'id_reciever', targetKey: 'id' });
-            Message.belongsTo(models.Account, { foreignKey: 'id_sender', targetKey: 'id' });
+            Message.belongsTo(models.Account, { foreignKey: 'id_reciever', targetKey: 'id', as: 'reciever' });
+            Message.belongsTo(models.Account, { foreignKey: 'id_sender', targetKey: 'id', as: 'sender' });
         }
     }
     Message.init(

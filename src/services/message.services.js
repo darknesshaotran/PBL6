@@ -15,36 +15,47 @@ class MessageServices {
             message: 'send message successfully',
         };
     }
-    async getConversationList(userID) {
+    async getConversationList(userID, page, limit) {
         const conversations = await db.Message.findAll({
-            where: {
-                [Op.or]: [
-                    {
-                        id_reciever: userID,
-                    },
-                    {
-                        id_sender: userID,
-                    },
-                ],
-            },
-            attributes: [
-                [db.sequelize.literal('DISTINCT `id_reciever`'), 'id'],
-                [db.sequelize.literal('MAX(`createdAt`)'), 'last_message_time'],
-            ],
+            where: db.sequelize.literal(
+                `Message.id IN (SELECT MAX(Messages.id) FROM Messages WHERE (id_reciever = ${userID} OR id_sender = ${userID}))`,
+            ),
+
+            attributes: ['id', 'content', 'createdAt'],
             include: [
                 {
-                    model: db.User,
-                    as: 'receiver',
-                    attributes: ['id', 'username', 'avatar'],
+                    model: db.Account,
+                    as: 'sender',
+                    attributes: {
+                        exclude: ['password', 'forgot_password_token', 'id_role', 'createdAt', 'updatedAt'],
+                    },
+                    include: [
+                        {
+                            model: db.inforUser,
+                            as: 'inforUser',
+                            attributes: ['firstname', 'lastname', 'phoneNumber', 'avatar'],
+                        },
+                    ],
                 },
                 {
-                    model: db.User,
-                    as: 'sender',
-                    attributes: ['id', 'username', 'avatar'],
+                    model: db.Account,
+                    as: 'reciever',
+                    attributes: {
+                        exclude: ['password', 'forgot_password_token', 'id_role', 'createdAt', 'updatedAt'],
+                    },
+                    include: [
+                        {
+                            model: db.inforUser,
+                            as: 'inforUser',
+                            attributes: ['firstname', 'lastname', 'phoneNumber', 'avatar'],
+                        },
+                    ],
                 },
             ],
+            offset: (page - 1) * limit,
+            limit: limit,
             group: ['id_reciever'],
-            order: [[db.sequelize.literal('last_message_time'), 'DESC']],
+            order: [[db.sequelize.literal('createdAt'), 'DESC']],
         });
         return {
             success: true,
