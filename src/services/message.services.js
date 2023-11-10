@@ -80,9 +80,29 @@ class MessageServices {
             limit: limit,
             order: [['createdAt', 'ASC']],
         });
+        const conversation = JSON.parse(JSON.stringify(messages));
+        for (let i = 0; i < conversation.length; i++) {
+            if (conversation[i].id_reciever == userID && conversation[i].id_sender == chat_user_ID) {
+                const User = await db.Account.findOne({
+                    where: { id: chat_user_ID },
+                    attributes: {
+                        exclude: ['password', 'forgot_password_token', 'id_role', 'createdAt', 'updatedAt'],
+                    },
+                    include: [
+                        { model: db.Role, as: 'Role', attributes: ['id', 'roleName'] },
+                        {
+                            model: db.inforUser,
+                            as: 'inforUser',
+                            attributes: ['firstname', 'lastname', 'avatar'],
+                        },
+                    ],
+                });
+                conversation[i].chatUser = User;
+            }
+        }
         return {
             success: true,
-            messages: messages,
+            messages: conversation,
         };
     }
 }
