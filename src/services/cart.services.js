@@ -6,6 +6,28 @@ const HTTP_STATUS = require('../constants/httpStatus');
 class CartServices {
     async addToCart(userID, id_shoes, quantity) {
         const cart = await db.Cart.findOne({ where: { id_account: userID } });
+
+        const cart_item = await db.Cart_Item.findOne({
+            where: {
+                id_shoes: id_shoes,
+                id_cart: cart.id,
+            },
+        });
+        if (cart_item) {
+            await db.Cart_Item.update(
+                { quantity: Number(cart_item.quantity) + Number(quantity) },
+                {
+                    where: {
+                        id_shoes: id_shoes,
+                        id_cart: cart.id,
+                    },
+                },
+            );
+            return {
+                success: true,
+                message: 'update quantity successfully',
+            };
+        }
         await db.Cart_Item.create({
             id_shoes: id_shoes,
             id_cart: cart.id,
@@ -13,7 +35,7 @@ class CartServices {
         });
         return {
             success: true,
-            messsage: 'added to cart successfully',
+            message: 'added to cart successfully',
         };
     }
     async getCartDetails(userID) {
@@ -26,7 +48,7 @@ class CartServices {
                 {
                     model: db.Shoes,
                     through: {
-                        attributes: ['quantity'],
+                        attributes: ['quantity', 'id'],
                         as: 'cart_item_infor',
                     },
                     as: 'Cart_Items',
