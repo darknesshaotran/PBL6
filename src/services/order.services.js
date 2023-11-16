@@ -92,6 +92,19 @@ class OrderServices {
                     attributes: ['id', 'name', 'price', 'size', 'color'],
                 },
                 { model: db.Status, as: 'Status', attributes: ['status'] },
+                {
+                    model: db.Account,
+                    attributes: {
+                        exclude: ['password', 'forgot_password_token', 'id_role'],
+                    },
+                    include: [
+                        {
+                            model: db.inforUser,
+                            as: 'inforUser',
+                            attributes: ['firstname', 'lastname', 'phoneNumber', 'avatar'],
+                        },
+                    ],
+                },
             ],
         });
 
@@ -229,6 +242,19 @@ class OrderServices {
                     attributes: ['id', 'name', 'price', 'size', 'color'],
                 },
                 { model: db.Status, as: 'Status', attributes: ['status'] },
+                {
+                    model: db.Account,
+                    attributes: {
+                        exclude: ['password', 'forgot_password_token', 'id_role'],
+                    },
+                    include: [
+                        {
+                            model: db.inforUser,
+                            as: 'inforUser',
+                            attributes: ['firstname', 'lastname', 'phoneNumber', 'avatar'],
+                        },
+                    ],
+                },
             ],
         });
         return {
