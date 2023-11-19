@@ -13,6 +13,7 @@ class RevenueServices {
                 },
             },
         });
+        console.log(orders);
         const totalRevenue = orders.reduce((acc, order) => acc + order.totalPrice, 0);
         return {
             success: true,
@@ -91,13 +92,14 @@ class RevenueServices {
             },
             include: [
                 {
-                    model: db.Shoes,
+                    model: db.Size_Item,
                     through: {
                         attributes: ['quantity', 'fixed_price'],
                         as: 'order_item_infor',
                     },
                     as: 'Order_items',
-                    attributes: ['id', 'name', 'price', 'size', 'color'],
+                    attributes: ['id', 'size'],
+                    include: [{ model: db.Shoes, as: 'Shoes', attributes: ['id', 'name', 'price'] }],
                 },
             ],
         });
@@ -105,9 +107,10 @@ class RevenueServices {
         const products = orders.reduce((product, order) => {
             const Order = JSON.parse(JSON.stringify(order));
             const Order_items = Order.Order_items;
+
             Order_items.forEach((item) => {
-                const productId = item.id;
-                const productName = item.name;
+                const productId = item.Shoes.id;
+                const productName = item.Shoes.name;
                 const quantity = item.order_item_infor.quantity;
                 const price = item.order_item_infor.fixed_price;
 

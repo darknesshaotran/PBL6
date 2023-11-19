@@ -2,49 +2,24 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('Shoes', {
+        await queryInterface.createTable('Carts', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER,
             },
-            id_category: {
+            id_shoes: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
                 references: {
-                    model: 'Categories', // Tên bảng mà khoá ngoại liên kết đến
+                    model: 'Shoes', // Tên bảng mà khoá ngoại liên kết đến
                     key: 'id', // Tên trường khoá chính trong bảng Role
                 },
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE',
             },
-            id_brand: {
-                allowNull: false,
-                type: Sequelize.INTEGER,
-                references: {
-                    model: 'Brands', // Tên bảng mà khoá ngoại liên kết đến
-                    key: 'id', // Tên trường khoá chính trong bảng Role
-                },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE',
-            },
-            name: {
-                type: Sequelize.STRING,
-            },
-            price: {
-                type: Sequelize.INTEGER,
-            },
-            import_price: {
-                type: Sequelize.INTEGER,
-            },
-            description: {
-                type: Sequelize.TEXT,
-            },
-            color: {
-                type: Sequelize.STRING,
-            },
-            size: {
+            id: {
                 type: Sequelize.INTEGER,
             },
             createdAt: {
@@ -60,6 +35,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('Shoes');
+        await queryInterface.dropTable('Carts');
     },
 };

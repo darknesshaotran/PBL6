@@ -4,8 +4,9 @@ class ShoesController {
     async addToCart(req, res, next) {
         const { decoded_authorization } = req;
         const userID = decoded_authorization.userID;
-        const { id_shoes, quantity } = req.body;
-        const result = await cartServices.addToCart(userID, id_shoes, quantity);
+        const { id_size_item, quantity } = req.body;
+        console.log('hehe:', id_size_item);
+        const result = await cartServices.addToCart(userID, id_size_item, quantity);
         res.json(result);
     }
     async getCartDetails(req, res, next) {
@@ -15,11 +16,11 @@ class ShoesController {
         res.json(result);
     }
     async updateQuantityItem(req, res, next) {
-        const { id_shoes } = req.params;
+        const { id_cartItem } = req.params;
         const { quantity } = req.body;
         const { decoded_authorization } = req;
         const userID = decoded_authorization.userID;
-        const result = await cartServices.updateQuantityItem(userID, quantity, id_shoes);
+        const result = await cartServices.updateQuantityItem(userID, quantity, id_cartItem);
         res.json(result);
     }
     async deleteCartItem(req, res, next) {

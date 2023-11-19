@@ -53,5 +53,11 @@ class ShoesController {
         const result = await shoesServices.updateShoesImages(id_shoes, urls);
         res.json(result);
     }
+    async addSizeItem(req, res, next) {
+        const { id_shoes } = req.params;
+        const { size, amount } = req.body;
+        const result = await shoesServices.addSizeItem(id_shoes, size, amount);
+        res.json(result);
+    }
 }
 module.exports = new ShoesController();

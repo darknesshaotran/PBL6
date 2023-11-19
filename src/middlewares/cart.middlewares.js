@@ -7,22 +7,9 @@ const validate = require('../utils/validation');
 
 const checkAddToCartValidator = checkSchema(
     {
-        id_shoes: {
-            custom: {
-                options: async (value) => {
-                    const shoes = await db.Shoes.findOne({
-                        where: {
-                            id: value,
-                        },
-                        attributes: {
-                            exclude: ['id_category', 'id_brand', 'createdAt', 'updatedAt'],
-                        },
-                    });
-                    if (!shoes) {
-                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'shoes not found' });
-                    }
-                    return true;
-                },
+        id_size_item: {
+            notEmpty: {
+                errorMessage: 'id_size_item is required',
             },
         },
         quantity: {
@@ -36,10 +23,10 @@ const checkAddToCartValidator = checkSchema(
 );
 const checkUpdateCartItemQuantityValidator = checkSchema(
     {
-        id_shoes: {
+        id_cartItem: {
             custom: {
                 options: async (value) => {
-                    const shoes = await db.Shoes.findOne({
+                    const shoes = await db.Cart_Item.findOne({
                         where: {
                             id: value,
                         },
@@ -48,7 +35,7 @@ const checkUpdateCartItemQuantityValidator = checkSchema(
                         },
                     });
                     if (!shoes) {
-                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'shoes not found' });
+                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'item not found' });
                     }
                     return true;
                 },

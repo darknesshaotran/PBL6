@@ -8,6 +8,7 @@ const userControllers = require('../controllers/user.controllers');
 const shoesControllers = require('../controllers/shoes.controllers');
 
 router.post('/add', FormdataValidator, AddShoesValidator, wrapController(shoesControllers.addShoes));
+router.post('/add_size/:id_shoes', ShoesExistsValidator, wrapController(shoesControllers.addSizeItem));
 router.put(
     '/updateInfor/:id_shoes',
     ShoesExistsValidator,

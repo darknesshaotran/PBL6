@@ -56,17 +56,24 @@ const checkItemOrderValidator = checkSchema(
         Item: {
             custom: {
                 options: async (value) => {
-                    const { id_shoes, quantity, price } = value;
-                    const shoes = await db.Shoes.findOne({
+                    const { id_size_item, quantity, price } = value;
+                    const shoes = await db.Size_Item.findOne({
                         where: {
-                            id: id_shoes,
+                            id: id_size_item,
                         },
                         attributes: {
                             exclude: ['createdAt', 'updatedAt'],
                         },
+                        include: [
+                            {
+                                model: db.Shoes,
+                                attributes: ['id', 'name', 'price'],
+                                as: 'Shoes',
+                            },
+                        ],
                     });
                     if (!shoes) {
-                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'shoes not found' });
+                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'item not found' });
                     }
                     if (isNaN(quantity)) {
                         throw new ErrorsWithStatus({
@@ -74,7 +81,8 @@ const checkItemOrderValidator = checkSchema(
                             message: 'quantity must be a number',
                         });
                     }
-                    if (Number(price) !== Number(shoes.price)) {
+                    if (Number(price) !== Number(shoes.Shoes.price)) {
+                        console.log(price, shoes.Shoes.price);
                         throw new ErrorsWithStatus({
                             status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
                             message: 'price is not correct',
@@ -103,6 +111,76 @@ const checkItemOrderValidator = checkSchema(
     },
     ['body'],
 );
+const checkCartItemOrderValidator = checkSchema(
+    {
+        cartItems: {
+            custom: {
+                options: async (value) => {
+                    for (let i = 0; i < value.length; i++) {
+                        const { id_size_item, quantity, price, id_cartItem } = value[i];
+                        const cart_Item = await db.Cart_Item.findOne({
+                            where: { id: id_cartItem },
+                        });
+                        if (!cart_Item) {
+                            throw new ErrorsWithStatus({
+                                status: HTTP_STATUS.NOT_FOUND,
+                                message: 'cart item not found',
+                            });
+                        }
+                        const shoes = await db.Size_Item.findOne({
+                            where: { id: id_size_item },
+                            attributes: {
+                                exclude: ['createdAt', 'updatedAt'],
+                            },
+                            include: [
+                                {
+                                    model: db.Shoes,
+                                    attributes: ['id', 'name', 'price'],
+                                    as: 'Shoes',
+                                },
+                            ],
+                        });
+                        if (!shoes) {
+                            throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'item not found' });
+                        }
+                        if (isNaN(quantity)) {
+                            throw new ErrorsWithStatus({
+                                status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+                                message: 'quantity must be a number',
+                            });
+                        }
+                        if (Number(price) !== Number(shoes.Shoes.price)) {
+                            console.log(price, shoes.Shoes.price);
+                            throw new ErrorsWithStatus({
+                                status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+                                message: 'price is not correct',
+                            });
+                        }
+                    }
+                    return true;
+                },
+            },
+        },
+        phoneNumber: {
+            notEmpty: {
+                errorMessage: USERS_MESSAGES.PHONENUMBER_IS_REQUIRED,
+            },
+            isString: {
+                errorMessage: USERS_MESSAGES.PHONENUMBER_MUST_BE_STRING,
+            },
+            isMobilePhone: {
+                errorMessage: 'Phone number is invalid',
+            },
+        },
+        address: {
+            notEmpty: {
+                errorMessage: 'address is required',
+            },
+        },
+    },
+    ['body'],
+);
 exports.OrderExistsValidator = validate(checkOrderExistsValidator);
 exports.StatusExistsValidator = validate(checkStatusExistsValidator);
 exports.ItemOrderValidator = validate(checkItemOrderValidator);
+exports.CartItemOrderValidator = validate(checkCartItemOrderValidator);

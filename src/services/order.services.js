@@ -6,18 +6,18 @@ const HTTP_STATUS = require('../constants/httpStatus');
 class OrderServices {
     async createOrderItem(Item, order) {
         await db.Order_Item.create({
-            id_shoes: Item.id_shoes,
+            id_size_item: Item.id_size_item,
             id_order: order.id,
             quantity: Item.quantity,
             fixed_price: Item.price * Item.quantity,
         });
-        const shoes = await db.Shoes.findOne({ where: { id: Item.id_shoes } });
-        await db.Shoes.update(
+        const size_Item = await db.Size_Item.findOne({ where: { id: Item.id_size_item } });
+        await db.Size_Item.update(
             {
-                amount: Number(shoes.amount) - Number(Item.quantity),
+                amount: Number(size_Item.amount) - Number(Item.quantity),
             },
             {
-                where: { id: shoes.id },
+                where: { id: size_Item.id },
             },
         );
     }
@@ -76,20 +76,27 @@ class OrderServices {
     }
 
     async OrderDetails(id_order) {
-        const order = await db.Order.findOne({
+        const Order = await db.Order.findOne({
             where: { id: id_order },
             attributes: {
                 exclude: ['createdAt', 'updatedAt'],
             },
             include: [
                 {
-                    model: db.Shoes,
+                    model: db.Size_Item,
                     through: {
                         attributes: ['quantity', 'fixed_price'],
                         as: 'order_item_infor',
                     },
                     as: 'Order_items',
-                    attributes: ['id', 'name', 'price', 'size', 'color'],
+                    attributes: ['id', 'size', 'amount'],
+                    include: [
+                        {
+                            model: db.Shoes,
+                            as: 'Shoes',
+                            attributes: ['id', 'name', 'price'],
+                        },
+                    ],
                 },
                 { model: db.Status, as: 'Status', attributes: ['status'] },
                 {
@@ -107,10 +114,15 @@ class OrderServices {
                 },
             ],
         });
-
-        /////////////////////////////////////////MIDDLEWARE
-        if (!order) throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'Order not found' });
-
+        const order = JSON.parse(JSON.stringify(Order));
+        for (let i = 0; i < order.Order_items.length; i++) {
+            const Image = await db.Image.findOne({
+                where: { id_shoes: order.Order_items[i].Shoes.id },
+                attributes: ['image'],
+            });
+            const image = JSON.parse(JSON.stringify(Image));
+            order.Order_items[i].Shoes.image = image.image ? image.image : '';
+        }
         return {
             success: true,
             result: order,
@@ -119,18 +131,8 @@ class OrderServices {
     async HistoryOrder(userID) {
         const order = await db.Order.findAll({
             where: { id_account: userID },
-            include: [
-                {
-                    model: db.Shoes,
-                    through: {
-                        attributes: ['quantity', 'fixed_price'],
-                        as: 'order_item_infor',
-                    },
-                    as: 'Order_items',
-                    attributes: ['id', 'name', 'price', 'size', 'color'],
-                },
-                { model: db.Status, as: 'Status', attributes: ['status'] },
-            ],
+            order: [['createdAt', 'DESC']],
+            include: [{ model: db.Status, as: 'Status', attributes: ['status'] }],
         });
         return {
             success: true,
@@ -142,31 +144,29 @@ class OrderServices {
             where: { id: id_order },
             include: [
                 {
-                    model: db.Shoes,
+                    model: db.Size_Item,
                     through: {
                         attributes: ['quantity', 'fixed_price'],
                         as: 'order_item_infor',
                     },
                     as: 'Order_items',
-                    attributes: ['id', 'name', 'price', 'size', 'color'],
+                    attributes: ['id', 'amount', 'size'],
                 },
                 { model: db.Status, as: 'Status', attributes: ['status'] },
             ],
         });
-        //////////////////////////////// MIDDLEWARE
-        if (!order) throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'Order not found' });
         if (order.id_status > 1)
             throw new ErrorsWithStatus({
                 status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
                 message: 'can not cancel order anymore',
             });
-        //////////////////////////////
+
         for (let i = 0; i < order.Order_items.length; i++) {
             // khôi phục amount của shoes ở đây
-            const shoes = await db.Shoes.findOne({ where: { id: order.Order_items[i].id } });
-            await db.Shoes.update(
+            const size_item = await db.Size_Item.findOne({ where: { id: order.Order_items[i].id } });
+            await db.Size_Item.update(
                 {
-                    amount: shoes.amount + order.Order_items[i].order_item_infor.quantity,
+                    amount: size_item.amount + order.Order_items[i].order_item_infor.quantity,
                 },
                 {
                     where: { id: order.Order_items[i].id },
@@ -187,18 +187,8 @@ class OrderServices {
     async StatusOrder(userID, id_status) {
         const order = await db.Order.findAll({
             where: { id_account: userID, id_status: id_status },
-            include: [
-                {
-                    model: db.Shoes,
-                    through: {
-                        attributes: ['quantity', 'fixed_price'],
-                        as: 'order_item_infor',
-                    },
-                    as: 'Order_items',
-                    attributes: ['id', 'name', 'price', 'size', 'color'],
-                },
-                { model: db.Status, as: 'Status', attributes: ['status'] },
-            ],
+            order: [['createdAt', 'DESC']],
+            include: [{ model: db.Status, as: 'Status', attributes: ['status'] }],
         });
         return {
             success: true,
@@ -209,7 +199,7 @@ class OrderServices {
         const order = await db.Order.findOne({
             where: { id: id_order },
         });
-        if (order.id_status >= 5) {
+        if (order.id_status >= 4) {
             throw new ErrorsWithStatus({
                 status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
                 message: `can't change order's status anymore`,
@@ -231,16 +221,8 @@ class OrderServices {
     async getAllStatusOrderList(id_status) {
         const orders = await db.Order.findAll({
             where: { id_status: id_status },
+            order: [['createdAt', 'DESC']],
             include: [
-                {
-                    model: db.Shoes,
-                    through: {
-                        attributes: ['quantity', 'fixed_price'],
-                        as: 'order_item_infor',
-                    },
-                    as: 'Order_items',
-                    attributes: ['id', 'name', 'price', 'size', 'color'],
-                },
                 { model: db.Status, as: 'Status', attributes: ['status'] },
                 {
                     model: db.Account,

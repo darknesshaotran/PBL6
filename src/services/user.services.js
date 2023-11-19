@@ -63,7 +63,6 @@ class UserServices {
         });
         return { success: true, message: USERS_MESSAGES.LOGOUT_SUCCESS };
     }
-
     async refreshToken(userID, exp, refreshToken, role) {
         const [new_access_token, new_refresh_token] = await Promise.all([
             signAccessToken({ userID: userID, role: role }),
@@ -79,7 +78,6 @@ class UserServices {
             refreshToken: new_refresh_token,
         };
     }
-
     async forgotPassword(userID, email) {
         const forgot_password_token = await signForgotPasswordToken({ userID: userID, type: 'forgotPasswordToken' });
         await db.Account.update(
@@ -100,7 +98,6 @@ class UserServices {
             message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD,
         };
     }
-
     async resetPassword(userID, password) {
         await db.Account.update(
             {

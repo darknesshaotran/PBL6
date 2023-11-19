@@ -11,11 +11,11 @@ module.exports = (sequelize, DataTypes) => {
             // define association here
             Order.belongsTo(models.Account, { foreignKey: 'id_account', targetKey: 'id' });
             Order.belongsTo(models.Status, { foreignKey: 'id_status', targetKey: 'id' });
-            Order.belongsToMany(models.Shoes, {
+            Order.belongsToMany(models.Size_Item, {
                 through: models.Order_Item,
                 as: 'Order_items',
                 foreignKey: 'id_order',
-                otherKey: 'id_shoes',
+                otherKey: 'id_size_item',
             });
         }
     }

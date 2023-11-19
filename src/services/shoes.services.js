@@ -98,7 +98,11 @@ class ShoesServices {
             where: { id_shoes: id_shoes },
             attributes: ['id', 'image'],
         });
-
+        const Size_Item = await db.Size_Item.findAll({
+            where: { id_shoes: id_shoes },
+            attributes: ['id', 'amount', 'size'],
+        });
+        const size_item = JSON.parse(JSON.stringify(Size_Item));
         const Image = JSON.parse(JSON.stringify(image));
         const rating = await db.Rating.findAll({
             where: { id_shoes: id_shoes },
@@ -126,6 +130,7 @@ class ShoesServices {
         totalStar = Math.floor(totalStar / Rating.length);
         const shoesDetails = {
             ...Shoes,
+            Size_items: size_item,
             image: Image,
             rating: Rating,
             totalStar: totalStar,
@@ -197,6 +202,37 @@ class ShoesServices {
         return {
             success: true,
             message: 'update images successfully',
+        };
+    }
+    async addSizeItem(id_shoes, size, amount) {
+        const size_item = await db.Size_Item.findOne({
+            where: {
+                id_shoes: id_shoes,
+                size: size,
+            },
+        });
+        if (size_item) {
+            await db.Size_Item.update(
+                {
+                    amount: Number(size_item.amount) + Number(amount),
+                },
+                {
+                    where: { id: size_item.id },
+                },
+            );
+            return {
+                success: true,
+                message: 'update size item successfully',
+            };
+        }
+        await db.Size_Item.create({
+            id_shoes,
+            size,
+            amount,
+        });
+        return {
+            success: true,
+            message: 'add size item successfully',
         };
     }
 }

@@ -12,7 +12,7 @@ const router = Router();
 router.post('/add', accessTokenValidator, AddToCartValidator, wrapController(cartControllers.addToCart));
 router.get('/details', accessTokenValidator, wrapController(cartControllers.getCartDetails));
 router.put(
-    '/updateQuantity/:id_shoes',
+    '/updateQuantity/:id_cartItem',
     accessTokenValidator,
     UpdateCartItemQuantityValidator,
     wrapController(cartControllers.updateQuantityItem),
