@@ -5,7 +5,7 @@ const HTTP_STATUS = require('../constants/httpStatus');
 
 class RevenueServices {
     async getRevenuesByTime(startTime, endTime) {
-        const orders = await db.Order.findAll({
+        const Orders = await db.Order.findAll({
             where: {
                 id_status: 4,
                 createdAt: {
@@ -13,12 +13,61 @@ class RevenueServices {
                 },
             },
         });
-        console.log(orders);
+        const orders = JSON.parse(JSON.stringify(Orders));
+        for (let i = 0; i < orders.length; i++) {
+            var originalPrice = 0;
+            const Sub_order = await db.Order.findOne({
+                where: { id: orders[i].id },
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt'],
+                },
+                include: [
+                    {
+                        model: db.Size_Item,
+                        through: {
+                            attributes: ['quantity', 'fixed_price'],
+                            as: 'order_item_infor',
+                        },
+                        as: 'Order_items',
+                        attributes: ['id', 'size', 'amount'],
+                        include: [
+                            {
+                                model: db.Shoes,
+                                as: 'Shoes',
+                                attributes: ['id', 'name', 'import_price'],
+                            },
+                        ],
+                    },
+                    { model: db.Status, as: 'Status', attributes: ['status'] },
+                    {
+                        model: db.Account,
+                        attributes: {
+                            exclude: ['password', 'forgot_password_token', 'id_role'],
+                        },
+                        include: [
+                            {
+                                model: db.inforUser,
+                                as: 'inforUser',
+                                attributes: ['firstname', 'lastname', 'phoneNumber', 'avatar'],
+                            },
+                        ],
+                    },
+                ],
+            });
+            const sub_order = JSON.parse(JSON.stringify(Sub_order));
+            const order_items = sub_order.Order_items;
+            for (let j = 0; j < order_items.length; j++) {
+                originalPrice += order_items[j].Shoes.import_price * order_items[j].order_item_infor.quantity;
+            }
+            orders[i].profit = orders[i].totalPrice - originalPrice;
+        }
         const totalRevenue = orders.reduce((acc, order) => acc + order.totalPrice, 0);
+        const profitRevenue = orders.reduce((acc, order) => acc + order.profit, 0);
         return {
             success: true,
             result: {
                 totalRevenue: totalRevenue,
+                profitRevenue: profitRevenue,
                 orders: orders,
             },
         };
