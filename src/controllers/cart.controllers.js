@@ -5,7 +5,6 @@ class ShoesController {
         const { decoded_authorization } = req;
         const userID = decoded_authorization.userID;
         const { id_size_item, quantity } = req.body;
-        console.log('hehe:', id_size_item);
         const result = await cartServices.addToCart(userID, id_size_item, quantity);
         res.json(result);
     }

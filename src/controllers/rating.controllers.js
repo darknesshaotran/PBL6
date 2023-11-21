@@ -2,10 +2,10 @@ const ratingServices = require('../services/rating.services');
 
 class RatingController {
     async addRating(req, res, next) {
-        const { id_shoes, star, comment } = req.body;
+        const { id_shoes, id_order_item, star, comment } = req.body;
         const { decoded_authorization } = req;
         const userID = decoded_authorization.userID;
-        const result = await ratingServices.addRating(star, comment, userID, id_shoes);
+        const result = await ratingServices.addRating(star, comment, userID, id_shoes, id_order_item);
         res.json(result);
     }
     async deleteRating(req, res, next) {
