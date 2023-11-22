@@ -55,22 +55,10 @@ const checkAddShoesValidator = async (req, res, next) => {
             message: 'import price must be a number',
         });
     }
-    if (isNaN(amount)) {
-        throw new ErrorsWithStatus({
-            status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
-            message: 'amount must be a number',
-        });
-    }
     if (!color) {
         throw new ErrorsWithStatus({
             status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
             message: 'name is required',
-        });
-    }
-    if (isNaN(size)) {
-        throw new ErrorsWithStatus({
-            status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
-            message: 'size must be a number',
         });
     }
 

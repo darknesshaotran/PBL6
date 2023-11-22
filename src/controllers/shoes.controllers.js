@@ -22,17 +22,15 @@ class ShoesController {
     }
     async addShoes(req, res, next) {
         const { urls, Fields } = req.formdata;
-        const { id_category, id_brand, name, price, import_price, amount, description, color, size } = Fields;
+        const { id_category, id_brand, name, price, import_price, description, color } = Fields;
         const result = await shoesServices.addShoes(
             id_category,
             id_brand,
             name,
             price,
             import_price,
-            amount,
             description,
             color,
-            size,
             urls,
         );
         res.json(result);

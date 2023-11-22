@@ -85,7 +85,7 @@ class OrderServices {
                 {
                     model: db.Size_Item,
                     through: {
-                        attributes: ['quantity', 'fixed_price', 'isRate'],
+                        attributes: ['id', 'quantity', 'fixed_price', 'isRate'],
                         as: 'order_item_infor',
                     },
                     as: 'Order_items',

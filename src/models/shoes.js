@@ -25,7 +25,6 @@ module.exports = (sequelize, DataTypes) => {
             import_price: DataTypes.INTEGER,
             description: DataTypes.TEXT,
             color: DataTypes.STRING,
-            size: DataTypes.INTEGER,
         },
         {
             sequelize,

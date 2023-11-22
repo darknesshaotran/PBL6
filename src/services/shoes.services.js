@@ -44,7 +44,7 @@ class ShoesServices {
             limit: limit,
             order: order,
             attributes: {
-                exclude: ['id_category', 'id_brand', 'createdAt', 'updatedAt', 'description', 'color', 'size'],
+                exclude: ['id_category', 'id_brand', 'createdAt', 'updatedAt', 'description', 'color'],
             },
             include: [
                 { model: db.Brand, as: 'Brand', attributes: ['id', 'name'] },
@@ -121,6 +121,7 @@ class ShoesServices {
                     ],
                 },
             ],
+            order: [['id', 'DESC']],
         });
         const Rating = JSON.parse(JSON.stringify(rating));
         var totalStar = 0;
@@ -138,17 +139,15 @@ class ShoesServices {
 
         return { success: true, result: shoesDetails };
     }
-    async addShoes(id_category, id_brand, name, price, import_price, amount, description, color, size, image) {
+    async addShoes(id_category, id_brand, name, price, import_price, description, color, image) {
         const shoes = await db.Shoes.create({
             id_category,
             id_brand,
             name,
             price,
             import_price,
-            amount,
             description,
             color,
-            size,
         });
         for (let i = 0; i < image.length; i++) {
             await db.Image.create({
