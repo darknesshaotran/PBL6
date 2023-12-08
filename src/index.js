@@ -19,7 +19,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// conenctionDatabase();
+conenctionDatabase();
 route(app);
 
 // note : dat middlewares error handler tai noi cuoi cung
