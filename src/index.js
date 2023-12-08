@@ -7,7 +7,7 @@ const ErrorHandler = require('../src/middlewares/error.middlewares.js');
 const dotenv = require('dotenv');
 const initSocket = require('./utils/socket.js');
 dotenv.config();
-const PORT = process.env.PORT || 8888;
+const PORT = process.env.PORT || 3000;
 const app = express();
 const httpServer = createServer(app);
 
@@ -19,7 +19,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-conenctionDatabase();
+// conenctionDatabase();
 route(app);
 
 // note : dat middlewares error handler tai noi cuoi cung
