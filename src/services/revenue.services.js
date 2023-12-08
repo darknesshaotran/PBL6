@@ -5,6 +5,56 @@ const HTTP_STATUS = require('../constants/httpStatus');
 
 class RevenueServices {
     async getRevenuesByTime(startTime, endTime) {
+        const OrdersInfor = await this.getListOrderByTime(startTime, endTime);
+
+        const orders = OrdersInfor.result.orders;
+
+        // Group orders by day
+        const ordersByDay = {};
+        orders.forEach((order) => {
+            const day = order.createdAt.split('T')[0];
+            if (!ordersByDay[day]) {
+                ordersByDay[day] = [];
+            }
+            ordersByDay[day].push(order);
+        });
+
+        // Calculate profit and total price for each day
+        const resultByDay = [];
+        for (const day in ordersByDay) {
+            const ordersForDay = ordersByDay[day];
+
+            let totalRevenueForDay = 0;
+            let profitForDay = 0;
+
+            ordersForDay.forEach((order) => {
+                totalRevenueForDay += order.totalPrice;
+                profitForDay += order.profit;
+            });
+
+            resultByDay.push({
+                date: day,
+                totalRevenue: totalRevenueForDay,
+                profit: profitForDay,
+                orders: ordersForDay,
+            });
+        }
+
+        // Calculate total revenue and profit for the entire time range
+        const totalRevenue = resultByDay.reduce((acc, result) => acc + result.totalRevenue, 0);
+        const profitRevenue = resultByDay.reduce((acc, result) => acc + result.profit, 0);
+
+        return {
+            success: true,
+            result: {
+                totalRevenue: totalRevenue,
+                profitRevenue: profitRevenue,
+                resultByDay: resultByDay,
+            },
+        };
+    }
+
+    async getListOrderByTime(startTime, endTime) {
         const Orders = await db.Order.findAll({
             where: {
                 id_status: 4,
