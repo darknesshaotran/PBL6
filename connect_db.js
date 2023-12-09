@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
-const sequelize = new Sequelize('pbl6', 'root', '', {
-    host: 'localhost',
+const sequelize = new Sequelize('b8za4wfy118lkrqptkvs', 'ulo9nfk4b2vfkaex', 'VtnVIzwARBNsFpgJr9sL', {
+    host: 'b8za4wfy118lkrqptkvs-mysql.services.clever-cloud.com',
     dialect: 'mysql',
     logging: false,
 });
