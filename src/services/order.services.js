@@ -10,6 +10,7 @@ class OrderServices {
             id_order: order.id,
             quantity: Item.quantity,
             fixed_price: Item.price * Item.quantity,
+            isRate: 0,
         });
         const size_Item = await db.Size_Item.findOne({ where: { id: Item.id_size_item } });
         await db.Size_Item.update(
