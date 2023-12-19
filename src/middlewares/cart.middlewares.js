@@ -35,7 +35,7 @@ const checkUpdateCartItemQuantityValidator = checkSchema(
                         },
                     });
                     if (!shoes) {
-                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'item not found' });
+                        throw { status: HTTP_STATUS.NOT_FOUND, message: 'item not found' };
                     }
                     return true;
                 },
@@ -65,7 +65,7 @@ const checkDeleteCartItemValidator = checkSchema(
                         },
                     });
                     if (!cart_item) {
-                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'cart item not found' });
+                        throw { status: HTTP_STATUS.NOT_FOUND, message: 'cart item not found' };
                     }
                     return true;
                 },

@@ -18,7 +18,7 @@ const checkRatingExistsValidator = checkSchema(
                         },
                     });
                     if (!rating) {
-                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'rating not found' });
+                        throw { status: HTTP_STATUS.NOT_FOUND, message: 'rating not found' };
                     }
                     return true;
                 },
@@ -41,7 +41,7 @@ const checkAddRatingValidator = checkSchema(
                         },
                     });
                     if (!shoes) {
-                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'shoes not found' });
+                        throw { status: HTTP_STATUS.NOT_FOUND, message: 'shoes not found' };
                     }
                     return true;
                 },
@@ -57,10 +57,10 @@ const checkAddRatingValidator = checkSchema(
             custom: {
                 options: async (value) => {
                     if (value < 1 || value > 5) {
-                        throw new ErrorsWithStatus({
-                            status: HTTP_STATUS.BAD_REQUEST,
+                        throw {
+                            status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
                             message: 'star must be from 1 to 5',
-                        });
+                        };
                     }
                     return true;
                 },
@@ -81,10 +81,10 @@ const checkUpdateRatingValidator = checkSchema(
             custom: {
                 options: async (value) => {
                     if (value < 1 || value > 5) {
-                        throw new ErrorsWithStatus({
-                            status: HTTP_STATUS.BAD_REQUEST,
+                        throw {
+                            status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
                             message: 'star must be from 1 to 5',
-                        });
+                        };
                     }
                     return true;
                 },

@@ -11,7 +11,7 @@ class UserServices {
     async findUserLogin(email, password) {
         const user = await db.Account.findOne({ where: { email: email, password: hashPassword(password) } });
         if (user === null) {
-            throw new Error(USERS_MESSAGES.WRONG_EMAIL_OR_PASSWORD);
+            return false;
         }
         return user;
     }

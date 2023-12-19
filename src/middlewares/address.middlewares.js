@@ -19,7 +19,7 @@ const checkAddressExistsValidator = checkSchema(
                         },
                     });
                     if (!address) {
-                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'address not found' });
+                        throw { status: HTTP_STATUS.NOT_FOUND, message: 'address not found' };
                     }
                     return true;
                 },

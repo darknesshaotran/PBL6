@@ -13,10 +13,10 @@ const checkUserExistValidator = checkSchema(
                         where: { id: value },
                     });
                     if (!user) {
-                        throw new ErrorsWithStatus({
+                        throw {
                             message: USERS_MESSAGES.USER_NOT_FOUND,
                             status: HTTP_STATUS.NOT_FOUND,
-                        });
+                        };
                     }
                     return true;
                 },

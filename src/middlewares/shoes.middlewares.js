@@ -9,57 +9,57 @@ const checkAddShoesValidator = async (req, res, next) => {
 
     const { id_category, id_brand, name, price, import_price, amount, description, color, size } = Fields;
     if (!id_category) {
-        throw new ErrorsWithStatus({
+        throw {
             status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
             message: 'category is required',
-        });
+        };
     }
     if (!id_brand) {
-        throw new ErrorsWithStatus({
+        throw {
             status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
             message: 'brand is required',
-        });
+        };
     }
 
     const category = await db.Category.findOne({ where: { id: id_category } });
     const brand = await db.Brand.findOne({ where: { id: id_brand } });
 
     if (!category) {
-        throw new ErrorsWithStatus({
+        throw {
             status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
             message: 'category not found',
-        });
+        };
     }
 
     if (!brand) {
-        throw new ErrorsWithStatus({
+        throw {
             status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
             message: 'brand not found',
-        });
+        };
     }
     if (!name) {
-        throw new ErrorsWithStatus({
+        throw {
             status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
             message: 'name is required',
-        });
+        };
     }
     if (isNaN(price)) {
-        throw new ErrorsWithStatus({
+        throw {
             status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
             message: 'price must be a number',
-        });
+        };
     }
     if (isNaN(import_price)) {
-        throw new ErrorsWithStatus({
+        throw {
             status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
             message: 'import price must be a number',
-        });
+        };
     }
     if (!color) {
-        throw new ErrorsWithStatus({
+        throw {
             status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
             message: 'name is required',
-        });
+        };
     }
 
     next();
@@ -78,7 +78,7 @@ const checkShoesExistsValidator = checkSchema(
                         },
                     });
                     if (!shoes) {
-                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'shoes not found' });
+                        throw { status: HTTP_STATUS.NOT_FOUND, message: 'shoes not found' };
                     }
                     return true;
                 },
@@ -105,7 +105,7 @@ const checkUpdateShoesInfor = checkSchema(
                         },
                     });
                     if (!category) {
-                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'category not found' });
+                        throw { status: HTTP_STATUS.NOT_FOUND, message: 'category not found' };
                     }
                     return true;
                 },
@@ -127,7 +127,7 @@ const checkUpdateShoesInfor = checkSchema(
                         },
                     });
                     if (!brand) {
-                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'brand not found' });
+                        throw { status: HTTP_STATUS.NOT_FOUND, message: 'brand not found' };
                     }
                     return true;
                 },

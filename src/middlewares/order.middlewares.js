@@ -19,7 +19,7 @@ const checkOrderExistsValidator = checkSchema(
                         },
                     });
                     if (!order) {
-                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'order not found' });
+                        throw { status: HTTP_STATUS.NOT_FOUND, message: 'order not found' };
                     }
                     return true;
                 },
@@ -42,7 +42,7 @@ const checkStatusExistsValidator = checkSchema(
                         },
                     });
                     if (!status) {
-                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'status not found' });
+                        throw new { status: HTTP_STATUS.NOT_FOUND, message: 'status not found' }();
                     }
                     return true;
                 },
@@ -73,20 +73,20 @@ const checkItemOrderValidator = checkSchema(
                         ],
                     });
                     if (!shoes) {
-                        throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'item not found' });
+                        throw { status: HTTP_STATUS.NOT_FOUND, message: 'item not found' };
                     }
                     if (isNaN(quantity)) {
-                        throw new ErrorsWithStatus({
+                        throw {
                             status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
                             message: 'quantity must be a number',
-                        });
+                        };
                     }
                     if (Number(price) !== Number(shoes.Shoes.price)) {
                         console.log(price, shoes.Shoes.price);
-                        throw new ErrorsWithStatus({
+                        throw {
                             status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
                             message: 'price is not correct',
-                        });
+                        };
                     }
                     return true;
                 },
@@ -122,10 +122,10 @@ const checkCartItemOrderValidator = checkSchema(
                             where: { id: id_cartItem },
                         });
                         if (!cart_Item) {
-                            throw new ErrorsWithStatus({
+                            throw {
                                 status: HTTP_STATUS.NOT_FOUND,
                                 message: 'cart item not found',
-                            });
+                            };
                         }
                         const shoes = await db.Size_Item.findOne({
                             where: { id: id_size_item },
@@ -141,20 +141,20 @@ const checkCartItemOrderValidator = checkSchema(
                             ],
                         });
                         if (!shoes) {
-                            throw new ErrorsWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: 'item not found' });
+                            throw { status: HTTP_STATUS.NOT_FOUND, message: 'item not found' };
                         }
                         if (isNaN(quantity)) {
-                            throw new ErrorsWithStatus({
+                            throw {
                                 status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
                                 message: 'quantity must be a number',
-                            });
+                            };
                         }
                         if (Number(price) !== Number(shoes.Shoes.price)) {
                             console.log(price, shoes.Shoes.price);
-                            throw new ErrorsWithStatus({
+                            throw {
                                 status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
                                 message: 'price is not correct',
-                            });
+                            };
                         }
                     }
                     return true;
