@@ -146,7 +146,7 @@ const checkAccessTokenValidator = checkSchema(
                     if (!value) {
                         throw {
                             message: USERS_MESSAGES.ACCESS_TOKEN_REQUIRED,
-                            status: HTTP_STATUS.BAD_REQUEST,
+                            status: HTTP_STATUS.UNAUTHORIZED,
                         };
                     }
                     const accessToken = value.split(' ')[1];

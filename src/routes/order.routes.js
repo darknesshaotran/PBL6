@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { wrapController } = require('../utils/handle');
-const { accessTokenValidator, refreshTokenValidator } = require('../middlewares/user.middlewares.js');
+const { accessTokenValidator, refreshTokenValidator, isAdminValidator } = require('../middlewares/user.middlewares.js');
 const cartControllers = require('../controllers/cart.controllers');
 const orderControllers = require('../controllers/order.controllers');
 const {
@@ -39,10 +39,17 @@ router.get(
 );
 
 // ADMIN ROUTE /////////////////////////////////////
-router.get('/All/status/:id_status', StatusExistsValidator, wrapController(orderControllers.getAllStatusOrderList));
+router.get(
+    '/All/status/:id_status',
+    accessTokenValidator,
+    isAdminValidator,
+    StatusExistsValidator,
+    wrapController(orderControllers.getAllStatusOrderList),
+);
 router.put(
     '/updateStatus/:id_order',
     accessTokenValidator,
+    isAdminValidator,
     OrderExistsValidator,
     wrapController(orderControllers.UpdateStatusOrder),
 );
