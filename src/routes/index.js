@@ -10,7 +10,7 @@ const revenueRoute = require('./revenue.routes.js');
 const messageRoute = require('./message.routes.js');
 const paymentRoute = require('./payment.routes.js');
 const route = (app) => {
-    app.use('/api/user', paymentRoute);
+    app.use('/api/payment', paymentRoute);
     app.use('/api/user', accountRoute);
     app.use('/api/shoes', shoesRoute);
     app.use('/api/cart', cartRoute);
