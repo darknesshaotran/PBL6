@@ -22,6 +22,12 @@ const route = (app) => {
     app.use('/api/revenue', revenueRoute);
     app.use('/api/message', messageRoute);
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    app.use('/success', (req, res, next) => {
+        return res.send('PAYMENT SUCCESSFUL !!!');
+    });
+    app.use('/fail', (req, res, next) => {
+        return res.send('PAYMENT FAILED !!!');
+    });
     app.use('/', (req, res, next) => {
         return res.send('WELCOME TO SERVER');
     });

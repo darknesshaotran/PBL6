@@ -8,15 +8,16 @@ const checkout_session = async (req, res, next) => {
             payment_method_types: ['card'],
             line_items: req.body.items,
             mode: 'payment',
-            success_url: 'https://www.youtube.com/watch?v=nJB1JO_MvRY',
-            cancel_url: 'https://stripe.com/docs/js/elements_object/create_payment_element',
+            success_url: process.env.SUCCESS_PAYMENT_LINK,
+            cancel_url: process.env.FAILED_PAYMENT_LINK,
+            payment_method_types: ['card'],
             // payment_intent_data: {
             //     amount: req.body.amount,
             //     currency: 'usd',
             // },
         });
 
-        res.json({ success: true, message: 'payment session created', sessionId: session.id, session });
+        res.json({ success: true, message: 'payment session created', sessionId: session.id, url: session.url });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
