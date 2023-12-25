@@ -75,7 +75,6 @@ class OrderServices {
             message: "create one item 's order successfully",
         };
     }
-
     async OrderDetails(id_order) {
         const Order = await db.Order.findOne({
             where: { id: id_order },
@@ -244,6 +243,34 @@ class OrderServices {
             success: true,
             result: orders,
         };
+    }
+    // ONLINE PAYMENT
+    async createOnlinePaymentOrder(size_items, userID, address, phoneNumber) {
+        const order = await db.Order.create({
+            id_account: userID,
+            id_status: 1,
+            order_address: address,
+            order_phoneNumber: phoneNumber,
+        });
+        var totalPrice = 0;
+        for (let i = 0; i < size_items.length; i++) {
+            await this.createOrderItem(size_items[i], order);
+            totalPrice += size_items[i].price * size_items[i].quantity;
+        }
+        await db.Order.update(
+            {
+                totalPrice: totalPrice,
+            },
+            {
+                where: { id: order.id },
+            },
+        );
+        return order;
+    }
+    async deleteOrder(id_order) {
+        await db.Order.destroy({
+            where: { id: id_order },
+        });
     }
 }
 module.exports = new OrderServices();
