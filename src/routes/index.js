@@ -9,6 +9,8 @@ const addressRoute = require('./address.routes.js');
 const revenueRoute = require('./revenue.routes.js');
 const messageRoute = require('./message.routes.js');
 const paymentRoute = require('./payment.routes.js');
+const orderServices = require('../services/order.services.js');
+const { wrapController } = require('../utils/handle.js');
 const route = (app) => {
     app.use('/api/payment', paymentRoute);
     app.use('/api/user', accountRoute);
@@ -25,9 +27,17 @@ const route = (app) => {
     app.use('/success', (req, res, next) => {
         return res.send('PAYMENT SUCCESSFUL !!!');
     });
-    app.use('/fail', (req, res, next) => {
-        return res.send('PAYMENT FAILED !!!');
-    });
+
+    app.use(
+        '/fail',
+        wrapController(async (req, res, next) => {
+            const { orderID } = req.query;
+            console.log(orderID);
+            await orderServices.deleteOrder(orderID);
+            return res.send('PAYMENT FAILED !!!');
+        }),
+    );
+
     app.use('/', (req, res, next) => {
         return res.send('WELCOME TO SERVER');
     });
