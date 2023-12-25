@@ -44,7 +44,7 @@ const checkout_session = async (req, res, next) => {
                 res.status(400).json({ error: 'size items for order is null' });
             }
         } else {
-            res.status(400).json({ error: 'please fill full the information (phoneNumber, Address' });
+            res.status(400).json({ error: 'please fill full the information' });
         }
     } catch (err) {
         res.status(400).json({ error: err.message });
