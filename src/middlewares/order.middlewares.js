@@ -81,6 +81,12 @@ const checkItemOrderValidator = checkSchema(
                             message: 'quantity must be a number',
                         };
                     }
+                    if (quantity > shoes.amount) {
+                        throw {
+                            status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+                            message: "quantity must be a lower than shoes's amount",
+                        };
+                    }
                     if (Number(price) !== Number(shoes.Shoes.price)) {
                         console.log(price, shoes.Shoes.price);
                         throw {
@@ -147,6 +153,12 @@ const checkCartItemOrderValidator = checkSchema(
                             throw {
                                 status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
                                 message: 'quantity must be a number',
+                            };
+                        }
+                        if (quantity > shoes.amount) {
+                            throw {
+                                status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+                                message: "quantity must be a lower than shoes's amount",
                             };
                         }
                         if (Number(price) !== Number(shoes.Shoes.price)) {

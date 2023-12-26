@@ -11,10 +11,7 @@ const checkout_session = async (req, res, next) => {
         const { address, phoneNumber, size_items, cart_size_items, items } = req.body;
         if (address && phoneNumber && items) {
             if (size_items) {
-                console.log(0);
-                console.log(size_items);
                 if (items.length > 0) {
-                    console.log(1);
                     const order = await orderServices.createOneItemOrder(size_items, userID, address, phoneNumber);
                     const session = await stripe.checkout.sessions.create({
                         payment_method_types: ['card'],
@@ -44,8 +41,6 @@ const checkout_session = async (req, res, next) => {
                     });
                 } else if (items.length <= 0) {
                     res.status(400).json({ error: 'items for stripe is null' });
-                } else if (size_items.length <= 0) {
-                    res.status(400).json({ error: 'size items for order is null' });
                 }
             } else if (cart_size_items) {
                 if (cart_size_items.length > 0 && items.length > 0) {

@@ -15,13 +15,7 @@ router.get(
     TimeValidator,
     wrapController(revenueControllers.getRevenueOfCustommer),
 );
-router.get(
-    '/product',
-    accessTokenValidator,
-    isAdminValidator,
-    TimeValidator,
-    wrapController(revenueControllers.getRevenueOfProduction),
-);
+router.get('/product', TimeValidator, wrapController(revenueControllers.getRevenueOfProduction));
 router.get(
     '/',
     accessTokenValidator,
