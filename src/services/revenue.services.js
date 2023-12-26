@@ -233,11 +233,29 @@ class RevenueServices {
             .sort((a, b) => b.quantity - a.quantity)
             .slice(0, 20);
         for (let i = 0; i < sortedProducts.length; i++) {
+            // add image
             const image = await db.Image.findOne({
                 where: { id_shoes: sortedProducts[i].id },
             });
             const Image = JSON.parse(JSON.stringify(image));
             sortedProducts[i].Image = Image ? Image.image : '';
+            // add category
+            const shoes = await db.Shoes.findOne({
+                where: { id: sortedProducts[i].id },
+                include: [
+                    {
+                        model: db.Category,
+                        attributes: ['id', 'name'],
+                    },
+                    {
+                        model: db.Brand,
+                        attributes: ['id', 'name'],
+                    },
+                ],
+            });
+            sortedProducts[i].Category = shoes.Category;
+            //add brand
+            sortedProducts[i].Brand = shoes.Brand;
         }
         const totalRevenue = orders.reduce((acc, order) => acc + order.totalPrice, 0);
 
