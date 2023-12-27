@@ -11,10 +11,64 @@ const checkAddToCartValidator = checkSchema(
             notEmpty: {
                 errorMessage: 'id_size_item is required',
             },
+            custom: {
+                options: async (value) => {
+                    const shoes = await db.Size_Item.findOne({
+                        where: {
+                            id: value,
+                        },
+                        attributes: {
+                            exclude: ['createdAt', 'updatedAt'],
+                        },
+                        include: [
+                            {
+                                model: db.Shoes,
+                                attributes: ['id', 'name', 'price'],
+                                as: 'Shoes',
+                            },
+                        ],
+                    });
+                    if (!shoes) {
+                        throw { status: HTTP_STATUS.NOT_FOUND, message: 'item not found' };
+                    }
+                    return true;
+                },
+            },
         },
+
         quantity: {
             isNumeric: {
                 errorMessage: 'quantity must be a number',
+            },
+            custom: {
+                options: async (value, { req }) => {
+                    const shoes = await db.Size_Item.findOne({
+                        where: {
+                            id: req.body.id_size_item,
+                        },
+                        attributes: {
+                            exclude: ['createdAt', 'updatedAt'],
+                        },
+                        include: [
+                            {
+                                model: db.Shoes,
+                                attributes: ['id', 'name', 'price'],
+                                as: 'Shoes',
+                            },
+                        ],
+                    });
+                    if (!shoes) {
+                        throw { status: HTTP_STATUS.NOT_FOUND, message: 'item not found' };
+                    }
+                    if (Number(value) > shoes.amount) {
+                        throw {
+                            status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+                            message: "quantity must be a lower than shoes's amount",
+                        };
+                    }
+
+                    return true;
+                },
             },
         },
     },

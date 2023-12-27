@@ -9,7 +9,7 @@ const checkOrderExistsValidator = checkSchema(
     {
         id_order: {
             custom: {
-                options: async (value) => {
+                options: async (value, { req }) => {
                     const order = await db.Order.findOne({
                         where: {
                             id: value,
@@ -18,9 +18,21 @@ const checkOrderExistsValidator = checkSchema(
                             exclude: ['createdAt', 'updatedAt'],
                         },
                     });
+
                     if (!order) {
                         throw { status: HTTP_STATUS.NOT_FOUND, message: 'order not found' };
                     }
+                    const { decoded_authorization } = req;
+                    const { role } = decoded_authorization;
+                    if (role != 'admin') {
+                        const customersID = order.id_account;
+                        const { decoded_authorization } = req;
+                        const userID = decoded_authorization.userID;
+                        if (customersID != userID) {
+                            throw { status: HTTP_STATUS.UNAUTHORIZED, message: "you are not order's owner" };
+                        }
+                    }
+
                     return true;
                 },
             },
