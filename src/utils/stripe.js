@@ -29,7 +29,7 @@ const checkout_session = async (req, res, next) => {
                         // },
                         //]
                         mode: 'payment',
-                        success_url: process.env.SUCCESS_PAYMENT_LINK + `success=1`,
+                        success_url: process.env.SUCCESS_PAYMENT_LINK,
                         cancel_url: process.env.FAILED_PAYMENT_LINK + `?orderID=${order.order.id}`,
                         payment_method_types: ['card'],
                     });
